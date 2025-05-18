@@ -35,6 +35,3 @@ def send_telegram_message(username):
         print(f"⚠️ Errore durante l'invio del messaggio: {e}")
 
 #
-
-# async -> usa httpx() -> HTTPX is a fully featured HTTP client library for Python 3 ==> invio/ricezione sms bot -> utente & utente -> bot
-# sync -> usa requests.post() ==> invio sms bot -> utente
