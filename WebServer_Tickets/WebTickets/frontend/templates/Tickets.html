@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acquisto Biglietti e Abbonamenti</title>
+    <link rel="stylesheet" href="{% static 'css/acquisto.css' %}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Acquisto Biglietti e Abbonamenti</h1>
+        
+        <div class="ticket-form">
+            <h2>Acquista Biglietto</h2>
+            <form action="#" method="POST">
+                {% csrf_token %}
+                <label for="stazione_partenza">Stazione di Partenza:</label>
+                <select id="stazione_partenza" name="stazione_partenza" required>
+                    <option value="roma">Roma</option>
+                    <option value="milano">Milano</option>
+                    <option value="napoli">Napoli</option>
+                </select>
+
+                <label for="stazione_arrivo">Stazione di Arrivo:</label>
+                <select id="stazione_arrivo" name="stazione_arrivo" required>
+                    <option value="firenze">Firenze</option>
+                    <option value="torino">Torino</option>
+                    <option value="bologna">Bologna</option>
+                </select>
+
+                <label for="data">Data di Viaggio:</label>
+                <input type="date" id="data" name="data" required>
+
+                <label for="numero_passeggeri">Numero Passeggeri:</label>
+                <input type="number" id="numero_passeggeri" name="numero_passeggeri" min="1" value="1" required>
+
+                <label for="classe">Classe:</label>
+                <select id="classe" name="classe" required>
+                    <option value="prima">Prima Classe</option>
+                    <option value="seconda">Seconda Classe</option>
+                </select>
+
+                <button type="submit">Acquista Biglietto</button>
+            </form>
+        </div>
+
+        <div class="subscription-form">
+            <h2>Abbonamenti</h2>
+            <form action="#" method="POST">
+                {% csrf_token %}
+                <label for="tipo_abbonamento">Tipo di Abbonamento:</label>
+                <select id="tipo_abbonamento" name="tipo_abbonamento" required>
+                    <option value="mensile">Mensile</option>
+                    <option value="annuale">Annuale</option>
+                </select>
+
+                <label for="zona">Zona di Viaggio:</label>
+                <select id="zona" name="zona" required>
+                    <option value="zona_1">Zona 1</option>
+                    <option value="zona_2">Zona 2</option>
+                    <option value="zona_3">Zona 3</option>
+                </select>
+
+                <button type="submit">Acquista Abbonamento</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

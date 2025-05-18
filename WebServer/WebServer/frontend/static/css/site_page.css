@@ -1,0 +1,135 @@
+/* Reset base */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    text-align: center;
+    height: 100%;
+    overflow-x: hidden; /* Nasconde la scroll orizzontale */
+}
+
+/* Impostazioni di box-sizing */
+* {
+    box-sizing: border-box;
+}
+
+/* Layout a griglia */
+.layout {
+    display: grid;
+    grid-template-areas:
+        "header"
+        "main"
+        "foot";
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr;
+    min-height: 100vh; /* Per evitare spazi bianchi in basso */
+    width: 100%;
+    gap: 0;
+    overflow-x: hidden; /* Impedisce overflow orizzontale */
+}
+
+/* Header */
+.header {
+    grid-area: header;
+    background-color: #6a4c9c; /* Violetto più scuro */
+    min-height: 60px;
+}
+
+/* Main */
+.main {
+    grid-area: main;
+    background: linear-gradient(#2c3e50, #1c2534); /* Blu notte e grigio scuro */
+    padding-top: 100px;
+}
+
+/* Footer */
+.foot {
+    grid-area: foot;
+    background-color: #2c3e50; /* Grigio antracite */
+    min-height: 100px;
+}
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+    z-index: 1000;
+}
+
+.navbar a,
+.navbar button {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background 0.3s;
+    border: none;
+    background: transparent;
+}
+
+.navbar a:hover,
+.navbar button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Titolo */
+.title {
+    font-size: 2.5em;
+    margin-top: 0;
+}
+
+/* Contenitore tabella */
+.table-container {
+    width: 90%;
+    margin: 30px auto;
+    overflow-x: auto;
+    background: linear-gradient(rgba(75, 0, 130, 0.5), rgba(44, 62, 80, 0.5)); /* Gradienti violacei e blu scuro */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Tabella */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.1); /* Background trasparente chiaro */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+th, td {
+    padding: 15px;
+    border: 1px solid white;
+    text-align: left;
+}
+
+th {
+    background: rgba(255, 255, 255, 0.3);
+    font-size: 1.1em;
+}
+
+tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Link nella tabella */
+td a {
+    color: #9b59b6; /* Violetto chiaro */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+td a:hover {
+    text-decoration: underline;
+}

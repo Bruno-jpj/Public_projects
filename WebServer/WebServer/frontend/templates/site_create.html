@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/site_create.css'%}">
+    <link rel="icon" href="{% static 'img/caffe_icon_32.png' %}" type="image/png">
+</head>
+<body>
+    <section class="layout">
+        <div class="header">
+            <!-- Navbar -->
+            <nav class="navbar">
+                <a href="{% url 'home_page_view' %}">Home</a>
+            </nav>
+        </div>
+        <div class="main">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{form.as_p}}
+                <button type="submit">Save/Add</button>
+            </form>
+        </div>
+        <div>
+            {% if success %}
+                <p> Sito creato/aggiunto con successo</p>
+            {% endif %}
+        </div>    
+    </section>
+</body>
+</html>

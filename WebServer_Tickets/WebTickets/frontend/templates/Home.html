@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page - WebTickets</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+
+<section class="layout">
+
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">WebTickets</div>
+            <div class="nav-links">
+                <a href="{% url 'find_station_view' %}">Cerca Stazione</a>
+                <a href="{% url 'account_view' %}">Il tuo Account</a>
+                <a href="{% url 'info_view' %}">Info</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="content">
+            <img src="{% static 'images/train.png' %}" alt="Train" class="train-image">
+            <div class="button-links">
+                <a href="{% url 'tickets_view' %}">Biglietti</a>
+                <a href="{% url 'offers_view' %}">Offerte</a>
+                <a href="{% url 'news_view' %}">News</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2023 WebTickets. Tutti i diritti riservati.</p>
+    </footer>
+</section>
+</body>
+</html>

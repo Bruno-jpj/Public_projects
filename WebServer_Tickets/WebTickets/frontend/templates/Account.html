@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il tuo Account</title>
+    <link rel="stylesheet" href="{% static 'css/account.css' %}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Dettagli Account</h1>
+        <div class="account-info">
+            <p><strong>Nome:</strong> {{ user.first_name }}</p>
+            <p><strong>Cognome:</strong> {{ user.last_name }}</p>
+            <p><strong>Codice Fiscale:</strong> {{ user.codice_fiscale }}</p>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Password:</strong> ********</p>
+            <p><strong>Città:</strong> {{ user.citta }}</p>
+        </div>
+
+        <h2>Biglietti Acquistati</h2>
+        <div class="tickets">
+            {% if biglietti %}
+                <ul>
+                    {% for biglietto in biglietti %}
+                        <li>
+                            <strong>Da:</strong> {{ biglietto.stazione_partenza }} &rarr; 
+                            <strong>A:</strong> {{ biglietto.stazione_arrivo }} <br>
+                            <strong>Data:</strong> {{ biglietto.data }} <br>
+                            <strong>Prezzo:</strong> €{{ biglietto.prezzo }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Non hai ancora acquistato biglietti.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

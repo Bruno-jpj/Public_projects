@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home_page.css'%}">
+    <link rel="icon" href="{% static 'img/caffe_icon_32.png' %}" type="image/png">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'site_list_view' %}">Siti</a>
+        <a href="{% url 'site_create_view' %}">Add</a>
+        <form method="POST" action="{% url 'log_out_view' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </nav>
+    <div class="content">
+        <h1>Benvenuto nella Home</h1>
+        <p>Clicca su "Siti" nella barra di navigazione per visitare la pagina dedicata.</p>
+    </div>
+   <script src="{% static 'js/home_page_script.js' %}"></script>
+</body>
+</html>
