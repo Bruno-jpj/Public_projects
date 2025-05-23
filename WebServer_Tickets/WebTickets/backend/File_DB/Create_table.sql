@@ -10,8 +10,8 @@ DROP TABLE if EXISTS Treno;
 CREATE TABLE if NOT EXISTS Utente (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
+	cognome TEXT NOT NULL,
 	codicefiscale TEXT NOT NULL,
-	citta TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
 	username TEXT NOT NULL,
     pwd TEXT NOT NULL

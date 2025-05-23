@@ -17,8 +17,8 @@
             <label for="name">Nome:</label>
             <input type="text" id="name" name="name" required>
 
-            <label for="cognome">Cognome:</label>
-            <input type="text" id="cognome" name="cognome" required>
+            <label for="surname">Cognome:</label>
+            <input type="text" id="surname" name="surname" required>
 
             <label for="codicefiscale">Codice Fiscale:</label>
             <input type="text" id="codicefiscale" name="codicefiscale" required>
@@ -37,6 +37,11 @@
 
             <button type="submit">Registrati</button>
         </form>
+        {% if messages %}
+            {% for message in messages%}
+                <p style="color: red;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
         <div class="switch">
             <p>Hai già un account? <a href="{% url 'login_view' %}">Accedi</a></p>
         </div>
