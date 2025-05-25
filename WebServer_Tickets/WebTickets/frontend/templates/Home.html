@@ -1,41 +1,90 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page - WebTickets</title>
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Home</title>
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
 <body>
+    <section>
 
-<section class="layout">
+        <header class="header">
+            <nav class="navbar">
+                <div class="logo">WebTickets</div>
+                <div class="nav-links">
+                    <a href="">Account</a>
+                    <a href="">News&Info</a>
+                    <a href="">NewsOneStation</a>
+                </div>
+            </nav>
+        </header>
 
-    <header class="header">
-        <nav class="navbar">
-            <div class="logo">WebTickets</div>
-            <div class="nav-links">
-                <a href="{% url 'find_station_view' %}">Cerca Stazione</a>
-                <a href="{% url 'account_view' %}">Il tuo Account</a>
-                <a href="{% url 'info_view' %}">Info</a>
+        <main class="main">
+
+            <div class="content">
+
+                <img src="{% static 'images/train.png %}" alt="train" class="train-image">
+
+                <div class="container">
+
+                    <h1>Acquisto Biglietti e Abbonamenti</h1>
+
+                    <div class="ticket-form">
+
+                        <h2>Acquista Biglietto</h2>
+
+                        <form action="#" method="POST">
+
+                            {% csrf_token %}
+
+                            <label for="stazione_partenza">Stazione di Partenza:</label>
+                            <select id="stazione_partenza" name="stazione_partenza" required>>
+                            </select>
+
+                            <label for="stazione_arrivo">Stazione di Arrivo:</label>
+                            <select id="stazione_arrivo" name="stazione_arrivo" required>
+                            </select>
+
+                            <label for="data">Data di Viaggio:</label>
+                            <input type="date" id="data" name="data" required>
+
+                            <label for="numero_passeggeri">Numero Passeggeri:</label>
+                            <input type="number" id="numero_passeggeri" name="numero_passeggeri" min="1" value="1" required>
+
+                            <label for="classe">Classe:</label>
+                            <select id="classe" name="classe" required>
+                                <option value="prima">Prima Classe</option>
+                                <option value="seconda">Seconda Classe</option>
+                            </select>
+
+                            <button type="submit">Acquista Biglietto</button>
+                        </form>
+                    </div>
+
+                    <div class="subscription-form">
+
+                        <h2>Abbonamenti</h2>
+
+                        <form action="#" method="POST">
+
+                            {% csrf_token %}
+                            
+                            <label for="tipo_abbonamento">Tipo di Abbonamento:</label>
+                            <select id="tipo_abbonamento" name="tipo_abbonamento" required>
+                            </select>
+
+                            <button type="submit">Acquista Abbonamento</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </nav>
-    </header>
+        </main>
 
-    <main class="main">
-        <div class="content">
-            <img src="{% static 'images/train.png' %}" alt="Train" class="train-image">
-            <div class="button-links">
-                <a href="{% url 'tickets_view' %}">Biglietti</a>
-                <a href="{% url 'offers_view' %}">Offerte</a>
-                <a href="{% url 'news_view' %}">News</a>
-            </div>
-        </div>
-    </main>
+        <footer class="footer">
+            <p>&copy; 2025 WebTickets. Tutti i diritti riservati.</p>
+        </footer>
 
-    <footer class="footer">
-        <p>&copy; 2023 WebTickets. Tutti i diritti riservati.</p>
-    </footer>
-</section>
+    </section>
 </body>
 </html>

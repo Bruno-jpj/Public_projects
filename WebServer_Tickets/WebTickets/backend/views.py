@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import Http404
+from django.http import Http404, HttpRequest
 from django.contrib.auth.hashers import check_password, make_password
-from django.core.management.base import BaseCommand
 #
 from backend.models import (
     Biglietto, 
@@ -15,7 +14,7 @@ from backend.models import (
     )
 #
 # view of the login
-def login_view(request):
+def login_view(request: HttpRequest):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -34,27 +33,30 @@ def login_view(request):
         messages.error(request, "Errore nel metodo")
 #
 # view for sign up
-def signup_view(request):
+def signup_view(request: HttpRequest):
     if request.method == "POST":
-        try:
-            name = request.POST.get("name")
-            surname = request.POST.get("surname")
-            cf = request.POST.get("codicefiscale")
-            email = request.POST.get("email")
-            username = request.POST.get("username")
-            password1 = request.POST.get("password1")
-            password2 = request.POST.get("password2")
-            #
-            if not name or not surname or not cf or not email or not username or not password1 or not password2:
-                messages.error(request, "Errore, tutti i campi devo essere compilati")
-            if password1 != password2:
-                messages.error(request, "Errore, le password sono diverse")
-        except:
-            messages.error(request, "Qualcosa è andato storto")
+        name = request.POST.get("name")
+        surname = request.POST.get("surname")
+        cf = request.POST.get("codicefiscale")
+        email = request.POST.get("email")
+        username = request.POST.get("username")
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
         #
-        password1 = make_password(password1)
+        if not all([name, surname, cf, email, username, password1, password2]):
+            messages.error(request, "Errore, tutti i campi devo essere compilati")
+            return render(request, 'SignUp.html')
+        #
+        if password1 != password2:
+            messages.error(request, "Errore, le password sono diverse")
+            return render(request, 'SignUp.html')
+        #
+        if Utente.objects.filter(username=username).exists():
+            messages.error(request, "Errore, l'username è già in uso")
+            return render(request, 'SignUp.html')
         #
         try: 
+            hashed_password = make_password(password1)
             # creazione user
             user = Utente.objects.create(
                 nome = name,
@@ -62,70 +64,72 @@ def signup_view(request):
                 codicefiscale = cf,
                 email = email,
                 username = username,
-                pwd = password1
-            )
-        except:
-            messages.error(request, "Errore, nella creazione dell'utente")
+                pwd = hashed_password
+                )
+            #
+            messages.success(request, "Utente creato con successo")
+            return redirect('login_view')
+        except Exception as e:
+            messages.error(request, f"Errore, nella creazione dell'utente: {e}")
+            return render(request, 'SignUp.html')
         #
-        messages.success(request, "Utente creato con successo")
-        return redirect("login_view")
-    else:
-        messages.error(request, "Errore nel metodo")
+    return render(request, 'SignUp.html')
 #
 # view for the log out
-def log_out_view(request):
-    try:
-        del request.session['user_id']
-    except KeyError:
-        pass
-    return redirect('login_view')
+def log_out_view(request: HttpRequest):
+    '''
+    try: 
+        del request.session['user_id'] 
+    except KeyError: 
+        pass 
+    return redirect('login_view') 
+    ''' 
+    try: 
+        request.session.flush() 
+        return render(request, 'Home.html') 
+    except: 
+        messages.error(request, "Errore durante il logout") 
+        return render(request, 'Account.html') 
 #
 # view to find a specific station
-def find_station_view(request):
+def find_station_view(request: HttpRequest):
     if request.method == "POST":
         #
         nome = request.POST.get("nome")
         citta = request.POST.get("citta")
         #
-        if not nome or not citta:
-            messages.error(request, "Errore, campo mancante")
+        if not nome and not citta:
+            messages.error(request, "Errore: almeno uno dei due campi deve essere compilato.")
+            return render(request, 'FindStation.html')
             #
         try:
-            town = Stazione.objects.get(citta=citta)
-            name = Stazione.objects.get(nome=nome)
+            stazioni = Stazione.objects.filter(nome_ = nome, citta_ = citta)
             #
-            messages.success("Stazione trovata con successo")
+            if stazioni.exists():
+                messages.success("Stazione trovata con successo")
+                return render(request, 'Home.html', {'stazioni': stazioni})
+            else:
+                messages.error(request, "Nessuna stazione trovata con i parametri inseriti")
             #
-            return render() # ritorna la stazione
-            #
-        except Stazione.DoesNotExist:
-            messages.error(request, "La stazione non esiste, ricontrolla i campi")
         except Stazione.MultipleObjectsReturned:
-            messages.info("Piu stazioni trovate")
-        except:
-            messages.error(request, "Errore")   
-    else:
-        messages.error(request, "Errore nel metodo")      
+            messages.info("Piu stazioni trovate")     
 #
 # view for the account info
-def account_view(request):
-    if 'user_id' not in request.session:
-        return redirect('login_view')
+def account_view(request: HttpRequest):
+    user_id = request.session.get('user_id')
     #
-    user_id = request.session['user_id']
+    if not user_id:
+        return redirect('login_view')
     #
     try:
         user = Utente.objects.get(id=user_id)
     except Utente.DoesNotExist:
-        return redirect('login_index_view')
-    #
-    print(f"User nella home page: [{user}]")
+        return redirect('login_view')
     #
     return render(request, 'Account.html', {'user': user})
 #
 # view for the info
-def info_view(request):
-    if 'user_id' not in request.session:
-        return redirect('login_view')
+def info_view(request: HttpRequest):
+    return render(request, 'Info.html')
     #
     
