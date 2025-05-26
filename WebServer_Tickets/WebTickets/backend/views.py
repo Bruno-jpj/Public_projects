@@ -131,5 +131,9 @@ def account_view(request: HttpRequest):
 # view for the info
 def info_view(request: HttpRequest):
     return render(request, 'Info.html')
-    #
-    
+#
+# view for the tickets
+#
+# view for the offers
+#
+# view for the news
