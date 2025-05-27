@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,9 +14,9 @@
             <nav class="navbar">
                 <div class="logo">WebTickets</div>
                 <div class="nav-links">
-                    <a href="">Account</a>
-                    <a href="">News&Info</a>
-                    <a href="">NewsOneStation</a>
+                    <a href="{% url 'account_view' %}">Account</a>
+                    <a href="{% url 'info_view' %}">News&Info</a>
+                    <a href="{% url 'find_station_view' %}">NewsOneStation</a>
                 </div>
             </nav>
         </header>
@@ -24,7 +25,7 @@
 
             <div class="content">
 
-                <img src="{% static 'images/train.png %}" alt="train" class="train-image">
+                <img src="{% static 'img/train.jpg' %}" alt="train" class="train-image">
 
                 <div class="container">
 

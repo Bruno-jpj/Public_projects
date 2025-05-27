@@ -21,7 +21,6 @@ def login_view(request: HttpRequest):
         #
         try:
             user = Utente.objects.get(username=username)
-
             if check_password(password, user.pwd):
                 request.session['user_id'] = user.id
                 return redirect("account_view")
@@ -29,8 +28,7 @@ def login_view(request: HttpRequest):
                 messages.error(request, "Username o Password errati!")
         except Utente.DoesNotExist:
             messages.error(request, "Username o Password inesistenti")
-    else:
-        messages.error(request, "Errore nel metodo")
+    return render(request, 'LogIn.html')
 #
 # view for sign up
 def signup_view(request: HttpRequest):
@@ -91,6 +89,12 @@ def log_out_view(request: HttpRequest):
         messages.error(request, "Errore durante il logout") 
         return render(request, 'Account.html') 
 #
+# view for home
+def home_view(request: HttpRequest):
+    user_id = request.session.get('user_id')
+    print(f"{user_id}")
+    return render(request, 'Home.html')
+#
 # view to find a specific station
 def find_station_view(request: HttpRequest):
     if request.method == "POST":
@@ -117,6 +121,7 @@ def find_station_view(request: HttpRequest):
 # view for the account info
 def account_view(request: HttpRequest):
     user_id = request.session.get('user_id')
+    print(user_id)
     #
     if not user_id:
         return redirect('login_view')
@@ -126,7 +131,10 @@ def account_view(request: HttpRequest):
     except Utente.DoesNotExist:
         return redirect('login_view')
     #
-    return render(request, 'Account.html', {'user': user})
+    context = {
+        'user': user
+    }
+    return render(request, 'Account.html', context)
 #
 # view for the info
 def info_view(request: HttpRequest):

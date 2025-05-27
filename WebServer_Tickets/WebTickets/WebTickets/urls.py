@@ -20,6 +20,7 @@ from backend.views import (
     login_view,
     log_out_view,
     signup_view,
+    home_view,
     find_station_view,
     account_view,
     info_view
@@ -27,4 +28,11 @@ from backend.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home_view, name='home_view'),
+    path('account/', account_view, name='account_view'),
+    path('login/', login_view, name='login_view'),
+    path('logout/', log_out_view, name='log_out_view'),
+    path('signup/', signup_view, name='signup_view'),
+    path('findstation/', find_station_view, name='find_station_view'),
+    path('info/', info_view, name='info_view')
 ]
