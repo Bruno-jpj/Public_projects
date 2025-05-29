@@ -70,11 +70,10 @@ CREATE TABLE if NOT EXISTS Biglietto (
     utente_id INTEGER NOT NULL,
     treno_id INTEGER NOT NULL,
     tratta_id INTEGER NOT NULL,
-    nominativo TEXT,  -- può essere NULL se il treno non lo richiede
     data_acquisto TEXT NOT NULL,
     data_viaggio TEXT NOT NULL,
     prezzo REAL NOT NULL,
-    tipo_biglietto TEXT,
+    tipo_biglietto TEXT, --classe del vagone
     FOREIGN KEY (utente_id) REFERENCES Utente(id) ON DELETE CASCADE on UPDATE CASCADE,
     FOREIGN KEY (treno_id) REFERENCES Treno(id) ON DELETE CASCADE on UPDATE CASCADE,
     FOREIGN KEY (tratta_id) REFERENCES Tratta(id) ON DELETE CASCADE on UPDATE CASCADE
