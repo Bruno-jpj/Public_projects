@@ -4,7 +4,7 @@ from django.http import Http404, HttpRequest
 from django.contrib.auth.hashers import check_password, make_password
 #
 from backend.models import (
-    Biglietto, 
+    Bigliettoabbonamento, 
     Metodopagamento,
     Stazione,
     Tratta,

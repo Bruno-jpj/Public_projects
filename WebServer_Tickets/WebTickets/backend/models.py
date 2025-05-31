@@ -8,26 +8,28 @@
 from django.db import models
 
 
-class Biglietto(models.Model):
-    utente = models.ForeignKey('Utente', models.DO_NOTHING)
-    treno = models.ForeignKey('Treno', models.DO_NOTHING)
-    tratta = models.ForeignKey('Tratta', models.DO_NOTHING)
-    nominativo = models.TextField(blank=True, null=True)
-    data_acquisto = models.TextField()
-    data_viaggio = models.TextField()
+class Bigliettoabbonamento(models.Model):
+    data_acquisto = models.DateTimeField()
+    data_inizio = models.DateTimeField()
+    data_fine = models.DateTimeField()
     prezzo = models.FloatField()
-    tipo_biglietto = models.TextField(blank=True, null=True)
+    classe_vagone = models.TextField()
+    numero_persone = models.IntegerField()
+    utente = models.ForeignKey('Utente', on_delete=models.CASCADE)
+    treno = models.ForeignKey('Treno', on_delete=models.PROTECT)
+    tratta = models.ForeignKey('Tratta', on_delete=models.PROTECT)
 
     class Meta:
         managed = False
-        db_table = 'Biglietto'
+        db_table = 'BigliettoAbbonamento'
 
 
 class Metodopagamento(models.Model):
-    utente = models.ForeignKey('Utente', models.DO_NOTHING)
     tipo = models.TextField()
-    numero_carta = models.TextField(blank=True, null=True)
-    scadenza = models.TextField(blank=True, null=True)
+    numero_carta = models.IntegerField()
+    cvv = models.IntegerField()
+    data_scadenza = models.DateField(blank=True, null=True)
+    utente = models.ForeignKey('Utente', on_delete=models.CASCADE)
 
     class Meta:
         managed = False
@@ -44,9 +46,9 @@ class Stazione(models.Model):
 
 
 class Tratta(models.Model):
-    stazione_partenza = models.ForeignKey(Stazione, models.DO_NOTHING)
-    stazione_arrivo = models.ForeignKey(Stazione, models.DO_NOTHING, related_name='tratta_stazione_arrivo_set')
-    durata = models.IntegerField(blank=True, null=True)
+    durata = models.TimeField()
+    stazione_arrivo = models.ForeignKey(Stazione, on_delete=models.PROTECT, db_column='stazione_arrivo')
+    stazione_partenza = models.ForeignKey(Stazione, on_delete=models.PROTECT, db_column='stazione_partenza', related_name='tratta_stazione_partenza_set')
 
     class Meta:
         managed = False
@@ -56,7 +58,6 @@ class Tratta(models.Model):
 class Treno(models.Model):
     nome = models.TextField()
     tipo = models.TextField()
-    richiede_nominativo = models.IntegerField()
 
     class Meta:
         managed = False
@@ -64,11 +65,10 @@ class Treno(models.Model):
 
 
 class Trenostazione(models.Model):
-    treno = models.ForeignKey(Treno, models.DO_NOTHING)
-    stazione = models.ForeignKey(Stazione, models.DO_NOTHING)
-    orario_arrivo = models.TextField(blank=True, null=True)
-    orario_partenza = models.TextField(blank=True, null=True)
-    ordine_di_passaggio = models.IntegerField(blank=True, null=True)
+    orario_arrivo = models.DateTimeField()
+    orario_partenza = models.DateTimeField()
+    treno = models.ForeignKey(Treno, on_delete=models.CASCADE)
+    stazione = models.ForeignKey(Stazione, on_delete=models.CASCADE)
 
     class Meta:
         managed = False
@@ -80,9 +80,118 @@ class Utente(models.Model):
     cognome = models.TextField()
     codicefiscale = models.TextField()
     email = models.TextField(unique=True)
-    username = models.TextField()
-    pwd = models.TextField()
+    password = models.TextField()
 
     class Meta:
         managed = False
         db_table = 'Utente'
+
+
+class AuthGroup(models.Model):
+    name = models.CharField(unique=True, max_length=150)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group'
+
+
+class AuthGroupPermissions(models.Model):
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
+
+
+class AuthPermission(models.Model):
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    codename = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
+
+
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.BooleanField()
+    username = models.CharField(unique=True, max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254)
+    is_staff = models.BooleanField()
+    is_active = models.BooleanField()
+    date_joined = models.DateTimeField()
+    first_name = models.CharField(max_length=150)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+
+class AuthUserGroups(models.Model):
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_groups'
+        unique_together = (('user', 'group'),)
+
+
+class AuthUserUserPermissions(models.Model):
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user', 'permission'),)
+
+
+class DjangoAdminLog(models.Model):
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.PositiveSmallIntegerField()
+    change_message = models.TextField()
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    action_time = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'
