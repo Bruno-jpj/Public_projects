@@ -135,5 +135,5 @@ EMAIL_HOST = 'smtp.gmail.com'  # Server SMTP di Gmail
 EMAIL_PORT = 587  # Porta per TLS
 EMAIL_USE_TLS = True  # Usa TLS (True per Gmail)
 EMAIL_HOST_USER = 'lorenzoeliasb@gmail.com'  # La tua email (username)
-EMAIL_HOST_PASSWORD = 'hcfrxenievkexcqe'  # La tua password dell'app Gmail (non la password principale)
+EMAIL_HOST_PASSWORD = ''  # La tua password dell'app Gmail (non la password principale)
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Opzionale: email predefinita per inviare
