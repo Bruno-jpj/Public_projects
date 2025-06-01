@@ -79,6 +79,7 @@ class Utente(models.Model):
     nome = models.TextField()
     cognome = models.TextField()
     codicefiscale = models.TextField()
+    username = models.TextField()
     email = models.TextField(unique=True)
     password = models.TextField()
 

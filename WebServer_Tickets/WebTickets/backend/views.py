@@ -3,6 +3,14 @@ from django.contrib import messages
 from django.http import Http404, HttpRequest
 from django.contrib.auth.hashers import check_password, make_password
 #
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.urls import reverse
+#
+from backend.forms import PasswordResetRequestForm, SetNewPasswordForm
+#
 from backend.models import (
     Bigliettoabbonamento, 
     Metodopagamento,
@@ -21,7 +29,7 @@ def login_view(request: HttpRequest):
         #
         try:
             user = Utente.objects.get(username=username)
-            if check_password(password, user.pwd):
+            if check_password(password, user.password):
                 request.session['user_id'] = user.id
                 return redirect("account_view")
             else:
@@ -62,7 +70,7 @@ def signup_view(request: HttpRequest):
                 codicefiscale = cf,
                 email = email,
                 username = username,
-                pwd = hashed_password
+                password = hashed_password
                 )
             #
             messages.success(request, "Utente creato con successo")
@@ -75,13 +83,6 @@ def signup_view(request: HttpRequest):
 #
 # view for the log out
 def log_out_view(request: HttpRequest):
-    '''
-    try: 
-        del request.session['user_id'] 
-    except KeyError: 
-        pass 
-    return redirect('login_view') 
-    ''' 
     try: 
         request.session.flush() 
         return render(request, 'Home.html') 
@@ -97,26 +98,8 @@ def home_view(request: HttpRequest):
 #
 # view to find a specific station
 def find_station_view(request: HttpRequest):
-    if request.method == "POST":
-        #
-        nome = request.POST.get("nome")
-        citta = request.POST.get("citta")
-        #
-        if not nome and not citta:
-            messages.error(request, "Errore: almeno uno dei due campi deve essere compilato.")
-            return render(request, 'FindStation.html')
-            #
-        try:
-            stazioni = Stazione.objects.filter(nome_ = nome, citta_ = citta)
-            #
-            if stazioni.exists():
-                messages.success("Stazione trovata con successo")
-                return render(request, 'Home.html', {'stazioni': stazioni})
-            else:
-                messages.error(request, "Nessuna stazione trovata con i parametri inseriti")
-            #
-        except Stazione.MultipleObjectsReturned:
-            messages.info("Piu stazioni trovate")     
+    return render(request, 'FindStation.html')
+
 #
 # view for the account info
 def account_view(request: HttpRequest):
