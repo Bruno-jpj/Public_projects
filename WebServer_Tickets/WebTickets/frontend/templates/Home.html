@@ -41,12 +41,16 @@
                                 {% csrf_token %}
                                 <label for="stazione_partenza">Stazione di Partenza:</label>
                                 <select id="stazione_partenza" name="stazione_partenza" required>
-                                    <!-- Aggiungi le opzioni dinamiche -->
+                                    {% for stazione in stazioni %}
+                                        <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                    {% endfor %}
                                 </select>
 
                                 <label for="stazione_arrivo">Stazione di Arrivo:</label>
                                 <select id="stazione_arrivo" name="stazione_arrivo" required>
-                                    <!-- Aggiungi le opzioni dinamiche -->
+                                    {% for stazione in stazioni %}
+                                        <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                    {% endfor %}
                                 </select>
 
                                 <label for="data">Data di Viaggio:</label>
@@ -61,7 +65,7 @@
                                     <option value="seconda">Seconda Classe</option>
                                 </select>
 
-                                <button type="submit">Acquista Biglietto</button>
+                                <button name="ticket" type="submit">Acquista Biglietto</button>
                             </form>
                         </div>
 
@@ -72,12 +76,16 @@
                                 {% csrf_token %}
                                 <label for="stazione_partenza">Stazione di Partenza:</label>
                                 <select id="stazione_partenza" name="stazione_partenza" required>
-                                    <!-- Aggiungi le opzioni dinamiche -->
+                                    {% for stazione in stazioni %}
+                                        <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                    {% endfor %}
                                 </select>
 
                                 <label for="stazione_arrivo">Stazione di Arrivo:</label>
                                 <select id="stazione_arrivo" name="stazione_arrivo" required>
-                                    <!-- Aggiungi le opzioni dinamiche -->
+                                    {% for stazione in stazioni %}
+                                        <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                    {% endfor %}
                                 </select>
 
                                 <label for="classe">Classe:</label>
@@ -88,9 +96,11 @@
 
                                 <label for="tipo_abbonamento">Tipo di Abbonamento:</label>
                                 <select id="tipo_abbonamento" name="tipo_abbonamento" required>
-                                    <!-- Aggiungi le opzioni dinamiche -->
+                                    <option value="settimanale">Settimanale</option>
+                                    <option value="mensile">Mensile</option>
+                                    <option value="annuale">Annuale</option>
                                 </select>
-                                <button type="submit">Acquista Abbonamento</button>
+                                <button name="subscription" type="submit">Acquista Abbonamento</button>
                             </form>
                         </div>
                     </div>

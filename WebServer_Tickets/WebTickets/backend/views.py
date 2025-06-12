@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import Http404, HttpRequest
 from django.contrib.auth.hashers import check_password, make_password
+from django.views import View
 #
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
@@ -88,7 +89,7 @@ def log_out_view(request: HttpRequest):
         return render(request, 'Home.html') 
     except: 
         messages.error(request, "Errore durante il logout") 
-        return render(request, 'Account.html') 
+        return render(request, 'Account.html')    
 #
 # view for home
 def home_view(request: HttpRequest):
@@ -99,7 +100,6 @@ def home_view(request: HttpRequest):
 # view to find a specific station
 def find_station_view(request: HttpRequest):
     return render(request, 'FindStation.html')
-
 #
 # view for the account info
 def account_view(request: HttpRequest):
@@ -123,8 +123,36 @@ def account_view(request: HttpRequest):
 def info_view(request: HttpRequest):
     return render(request, 'Info.html')
 #
-# view for the tickets
+# view for showing the stations
+def show_station_view(request:  HttpRequest):
+    try:
+        stazioni = Stazione.objects.all()
+        #
+        context = {
+            'stazioni': stazioni,
+        }
+    except Stazione.DoesNotExist:
+        return render(request, 'Home.hmtl')
+    return render(request, 'Home.html', context)
+#
+# view for the ticket/subscription
+class GestioneMultiForm(View):
+    def get(self, request: HttpRequest, *args, **kwargs):
+        # rendi la pagina con form vuoti
+        return render(request, 'Home.html')
+    #
+    def post(self, request: HttpRequest, *args, **kwargs):
+        # controllo metodo request
+        if request.method == 'POST':
+            # controllo il pulsante che è stato premuto
+            if 'ticket' in request.POST:
+                print("premuto ticket submit")
+            elif 'subscription' in request.POST:
+                print("premuto subscription submit")
+            else:
+                print("nothing happened")
 #
 # view for the offers
+def offer_view(request: HttpRequest):
+    return render(request, 'Offers.html')
 #
-# view for the news
