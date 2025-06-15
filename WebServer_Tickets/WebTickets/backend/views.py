@@ -132,7 +132,7 @@ def show_station_view(request:  HttpRequest):
             'stazioni': stazioni,
         }
     except Stazione.DoesNotExist:
-        return render(request, 'Home.hmtl')
+        return render(request, 'Home.html')
     return render(request, 'Home.html', context)
 #
 # view for the ticket/subscription
