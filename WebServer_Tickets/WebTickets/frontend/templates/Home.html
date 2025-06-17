@@ -41,16 +41,24 @@
                                 {% csrf_token %}
                                 <label for="stazione_partenza">Stazione di Partenza:</label>
                                 <select id="stazione_partenza" name="stazione_partenza" required>
-                                    {% for stazione in stazioni %}
-                                        <option value="{{stazione.citta}}">{{stazione.citta}}</option>
-                                    {% endfor %}
+                                    {% if stazioni %}
+                                        {% for stazione in stazioni %}
+                                            <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option disabled>Nessuna stazione disponibile</option>
+                                    {% endif %}
                                 </select>
 
                                 <label for="stazione_arrivo">Stazione di Arrivo:</label>
                                 <select id="stazione_arrivo" name="stazione_arrivo" required>
-                                    {% for stazione in stazioni %}
-                                        <option value="{{stazione.citta}}">{{stazione.citta}}</option>
-                                    {% endfor %}
+                                    {% if stazioni %}
+                                        {% for stazione in stazioni %}
+                                            <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option disabled>Nessuna stazione disponibile</option>
+                                    {% endif %}
                                 </select>
 
                                 <label for="data">Data di Viaggio:</label>
@@ -67,6 +75,11 @@
 
                                 <button name="ticket" type="submit">Acquista Biglietto</button>
                             </form>
+                            {% if messages %}
+                                {% for message in messages%}
+                                    <p style="color: red;">{{ message }}</p>
+                                {% endfor %}
+                            {% endif %}
                         </div>
 
                         <!-- Form di acquisto Abbonamento -->
@@ -76,16 +89,24 @@
                                 {% csrf_token %}
                                 <label for="stazione_partenza">Stazione di Partenza:</label>
                                 <select id="stazione_partenza" name="stazione_partenza" required>
-                                    {% for stazione in stazioni %}
-                                        <option value="{{stazione.citta}}">{{stazione.citta}}</option>
-                                    {% endfor %}
+                                    {% if stazioni %}
+                                        {% for stazione in stazioni %}
+                                            <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option disabled>Nessuna stazione disponibile</option>
+                                    {% endif %}
                                 </select>
-
+                                
                                 <label for="stazione_arrivo">Stazione di Arrivo:</label>
                                 <select id="stazione_arrivo" name="stazione_arrivo" required>
-                                    {% for stazione in stazioni %}
-                                        <option value="{{stazione.citta}}">{{stazione.citta}}</option>
-                                    {% endfor %}
+                                    {% if stazioni %}
+                                        {% for stazione in stazioni %}
+                                            <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option disabled>Nessuna stazione disponibile</option>
+                                    {% endif %}
                                 </select>
 
                                 <label for="classe">Classe:</label>
@@ -102,6 +123,11 @@
                                 </select>
                                 <button name="subscription" type="submit">Acquista Abbonamento</button>
                             </form>
+                            {% if messages %}
+                                {% for message in messages%}
+                                    <p style="color: red;">{{ message }}</p>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>

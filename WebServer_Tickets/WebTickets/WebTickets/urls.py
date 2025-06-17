@@ -24,7 +24,7 @@ from backend.views import (
     find_station_view,
     account_view,
     info_view,
-    show_station_view
+    buy_view
 )
 
 urlpatterns = [
@@ -36,7 +36,7 @@ urlpatterns = [
     path('signup/', signup_view, name='signup_view'),
     #
     path('account/', account_view, name='account_view'),
-    path('shostation/', show_station_view, name='show_station_view'),
+    path('buy/', buy_view, name='buy_view'),
     path('findstation/', find_station_view, name='find_station_view'),
     path('info/', info_view, name='info_view')
 ]

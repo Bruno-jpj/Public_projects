@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.http import Http404, HttpRequest
 from django.contrib.auth.hashers import check_password, make_password
 from django.views import View
+import os
 #
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
@@ -93,9 +94,29 @@ def log_out_view(request: HttpRequest):
 #
 # view for home
 def home_view(request: HttpRequest):
+
+    # user in session
     user_id = request.session.get('user_id')
-    print(f"{user_id}")
-    return render(request, 'Home.html')
+
+    # check user is logged in
+    if user_id == None:
+        print("No user logged in")
+    else:
+        print(f"{user_id}")
+
+    # show station
+    try:
+        stazioni = Stazione.objects.all()
+        #
+        context = {
+            'stazioni': stazioni,
+        }
+    except Exception as e:
+        print(f"Errore. Problema nel recupero delle stazioni {e}")
+    #
+
+    #
+    return render(request, 'Home.html', context)
 #
 # view to find a specific station
 def find_station_view(request: HttpRequest):
@@ -123,34 +144,29 @@ def account_view(request: HttpRequest):
 def info_view(request: HttpRequest):
     return render(request, 'Info.html')
 #
-# view for showing the stations
-def show_station_view(request:  HttpRequest):
-    try:
-        stazioni = Stazione.objects.all()
-        #
-        context = {
-            'stazioni': stazioni,
-        }
-    except Stazione.DoesNotExist:
-        return render(request, 'Home.html')
-    return render(request, 'Home.html', context)
-#
 # view for the ticket/subscription
-class GestioneMultiForm(View):
-    def get(self, request: HttpRequest, *args, **kwargs):
-        # rendi la pagina con form vuoti
-        return render(request, 'Home.html')
-    #
-    def post(self, request: HttpRequest, *args, **kwargs):
-        # controllo metodo request
-        if request.method == 'POST':
-            # controllo il pulsante che è stato premuto
-            if 'ticket' in request.POST:
-                print("premuto ticket submit")
-            elif 'subscription' in request.POST:
-                print("premuto subscription submit")
-            else:
-                print("nothing happened")
+def buy_view(request: HttpRequest):
+    if request.method == 'POST':
+        partenza = request.POST.get('stazione_partenza')
+        arrivo = request.POST.get('stazione_arrivo')
+
+        if partenza == arrivo:
+            messages.error(request, 'Le stazioni di partenza e arrivo sono le stesse')
+            return redirect(home_view)
+        #
+        if 'ticket' in request.POST:
+            # logic for buying ticket
+            print("ticket")
+        elif 'subscription' in request.POST:
+            # logic for buying ticket
+            print('subscription')
+        else:
+            messages.info(request, 'NoTicket or NoSubscription')
+        #
+        messages.success(request, 'Acquisto completato con successo')
+        return redirect('home_view')
+    else:
+        return redirect('home_view')
 #
 # view for the offers
 def offer_view(request: HttpRequest):
