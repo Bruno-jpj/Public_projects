@@ -1,174 +1,40 @@
+# django import
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import Http404, HttpRequest
 from django.contrib.auth.hashers import check_password, make_password
-from django.views import View
-import os
-#
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
+from django.http import Http404, HttpRequest
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.views import View
+from django.views.generic import ListView
+from django.utils.encoding import force_bytes
 from django.core.mail import send_mail
 from django.urls import reverse
-#
-from backend.forms import PasswordResetRequestForm, SetNewPasswordForm
-#
+
+# extra import
+import os
+
 from backend.models import (
-    Bigliettoabbonamento, 
+    Bigliettoabbonamento,
     Metodopagamento,
     Stazione,
     Tratta,
     Treno,
     Trenostazione,
     Utente
-    )
-#
-# view of the login
-def login_view(request: HttpRequest):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        #
-        try:
-            user = Utente.objects.get(username=username)
-            if check_password(password, user.password):
-                request.session['user_id'] = user.id
-                return redirect("account_view")
-            else:
-                messages.error(request, "Username o Password errati!")
-        except Utente.DoesNotExist:
-            messages.error(request, "Username o Password inesistenti")
-    return render(request, 'LogIn.html')
-#
-# view for sign up
-def signup_view(request: HttpRequest):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        surname = request.POST.get("surname")
-        cf = request.POST.get("codicefiscale")
-        email = request.POST.get("email")
-        username = request.POST.get("username")
-        password1 = request.POST.get("password1")
-        password2 = request.POST.get("password2")
-        #
-        if not all([name, surname, cf, email, username, password1, password2]):
-            messages.error(request, "Errore, tutti i campi devo essere compilati")
-            return render(request, 'SignUp.html')
-        #
-        if password1 != password2:
-            messages.error(request, "Errore, le password sono diverse")
-            return render(request, 'SignUp.html')
-        #
-        if Utente.objects.filter(username=username).exists():
-            messages.error(request, "Errore, l'username è già in uso")
-            return render(request, 'SignUp.html')
-        #
-        try: 
-            hashed_password = make_password(password1)
-            # creazione user
-            user = Utente.objects.create(
-                nome = name,
-                cognome = surname,
-                codicefiscale = cf,
-                email = email,
-                username = username,
-                password = hashed_password
-                )
-            #
-            messages.success(request, "Utente creato con successo")
-            return redirect('login_view')
-        except Exception as e:
-            messages.error(request, f"Errore, nella creazione dell'utente: {e}")
-            return render(request, 'SignUp.html')
-        #
-    return render(request, 'SignUp.html')
-#
-# view for the log out
-def log_out_view(request: HttpRequest):
-    try: 
-        request.session.flush() 
-        return render(request, 'Home.html') 
-    except: 
-        messages.error(request, "Errore durante il logout") 
-        return render(request, 'Account.html')    
-#
-# view for home
-def home_view(request: HttpRequest):
+)
 
-    # user in session
-    user_id = request.session.get('user_id')
+# Class Based View
+# InOut Logic
+class InOutLogic(View):
+    template_name = 'LogIn.html'
+    login_url = 'login_view'
 
-    # check user is logged in
-    if user_id == None:
-        print("No user logged in")
-    else:
-        print(f"{user_id}")
+    def get(self, request: HttpRequest):
+        return render(request)
+    #
+    def post(self, request: HttpRequest):
+        action = request.POST.get("action")
 
-    # show station
-    try:
-        stazioni = Stazione.objects.all()
-        #
-        context = {
-            'stazioni': stazioni,
-        }
-    except Exception as e:
-        print(f"Errore. Problema nel recupero delle stazioni {e}")
-    #
-
-    #
-    return render(request, 'Home.html', context)
 #
-# view to find a specific station
-def find_station_view(request: HttpRequest):
-    return render(request, 'FindStation.html')
-#
-# view for the account info
-def account_view(request: HttpRequest):
-    user_id = request.session.get('user_id')
-    print(user_id)
-    #
-    if not user_id:
-        return redirect('login_view')
-    #
-    try:
-        user = Utente.objects.get(id=user_id)
-    except Utente.DoesNotExist:
-        return redirect('login_view')
-    #
-    context = {
-        'user': user
-    }
-    return render(request, 'Account.html', context)
-#
-# view for the info
-def info_view(request: HttpRequest):
-    return render(request, 'Info.html')
-#
-# view for the ticket/subscription
-def buy_view(request: HttpRequest):
-    if request.method == 'POST':
-        partenza = request.POST.get('stazione_partenza')
-        arrivo = request.POST.get('stazione_arrivo')
-
-        if partenza == arrivo:
-            messages.error(request, 'Le stazioni di partenza e arrivo sono le stesse')
-            return redirect(home_view)
-        #
-        if 'ticket' in request.POST:
-            # logic for buying ticket
-            print("ticket")
-        elif 'subscription' in request.POST:
-            # logic for buying ticket
-            print('subscription')
-        else:
-            messages.info(request, 'NoTicket or NoSubscription')
-        #
-        messages.success(request, 'Acquisto completato con successo')
-        return redirect('home_view')
-    else:
-        return redirect('home_view')
-#
-# view for the offers
-def offer_view(request: HttpRequest):
-    return render(request, 'Offers.html')
 #
