@@ -240,3 +240,153 @@ class DashboardView(LoginRequiredMixin, View):
     def acquista_abbonamento(self, request):
         messages.success(request, "Abbonamento attivato!")
         return redirect("dashboard_view")
+#
+#
+#
+#
+#
+#
+from backend.models import (
+    Bigliettoabbonamento,
+    Metodopagamento,
+    Stazione,
+    Tratta,
+    Treno,
+    Trenostazione,
+    Utente
+)
+#
+#
+#
+#
+#
+#
+#
+#
+
+# Home view (acquisto biglietti e abbonamenti)
+class HomeLogic(View):
+    template_name = 'Home.html'
+
+    def get(self, request: HttpRequest):
+        return render(request, self.template_name)
+
+    def post(self, request: HttpRequest):
+        action = request.POST.get("action")
+        if action == 'ticket':
+            return self.buy_ticket(request)
+        elif action == 'subscription':
+            return self.buy_subscription(request)
+        else:
+            messages.error(request, "Azione non riconosciuta")
+            return redirect('home')  
+
+    def buy_ticket(self, request: HttpRequest):
+        partenza = request.POST.get('stazione_partenza')
+        arrivo = request.POST.get('stazione_arrivo')
+
+        if partenza == arrivo:
+            messages.error(request, "Le stazioni di partenza e arrivo sono identiche")
+        else:
+            messages.success(request, "Biglietto acquistato con successo")
+        return redirect('home')
+
+    def buy_subscription(self, request: HttpRequest):
+        partenza = request.POST.get('stazione_partenza')
+        arrivo = request.POST.get('stazione_arrivo')
+
+        if partenza == arrivo:
+            messages.error(request, "Le stazioni di partenza e arrivo sono identiche")
+        else:
+            messages.success(request, "Abbonamento acquistato con successo")
+        return redirect('home')
+#
+# View per login e gestione utente
+class UserLogic(View):
+    def get(self, request: HttpRequest):
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return render(request, 'Login.html')
+
+        try:
+            user = Utente.objects.get(id=user_id)
+        except Utente.DoesNotExist:
+            return render(request, 'Login.html')
+
+        return render(request, 'Account.html', {'user': user})
+
+    def post(self, request: HttpRequest):
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        try:
+            user = Utente.objects.get(username=username)
+            if check_password(password, user.password):
+                request.session['user_id'] = user.id
+                return redirect('account')
+            else:
+                messages.error(request, "Username o password errati")
+        except Utente.DoesNotExist:
+            messages.error(request, "Utente inesistente")
+
+        return render(request, 'Login.html')
+#
+# Registrazione utente
+def signup_view(request: HttpRequest):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        surname = request.POST.get("surname")
+        cf = request.POST.get("codicefiscale")
+        email = request.POST.get("email")
+        username = request.POST.get("username")
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
+
+        if not all([name, surname, cf, email, username, password1, password2]):
+            messages.error(request, "Tutti i campi devono essere compilati")
+            return render(request, 'SignUp.html')
+
+        if password1 != password2:
+            messages.error(request, "Le password non coincidono")
+            return render(request, 'SignUp.html')
+
+        if Utente.objects.filter(username=username).exists():
+            messages.error(request, "Username già in uso")
+            return render(request, 'SignUp.html')
+
+        if Utente.objects.filter(email=email).exists():
+            messages.error(request, "Email già registrata")
+            return render(request, 'SignUp.html')
+
+        try:
+            hashed_password = make_password(password1)
+            Utente.objects.create(
+                nome=name,
+                cognome=surname,
+                codicefiscale=cf,
+                email=email,
+                username=username,
+                password=hashed_password
+            )
+            messages.success(request, "Registrazione avvenuta con successo")
+            return redirect('login')
+        except Exception as e:
+            messages.error(request, f"Errore nella creazione dell'utente: {e}")
+            return render(request, 'SignUp.html')
+
+    return render(request, 'SignUp.html')
+#
+# Logout
+def log_out_view(request: HttpRequest):
+    try:
+        request.session.flush()
+        return redirect('home')
+    except Exception as e:
+        messages.error(request, f"Errore durante il logout: {e}")
+        return redirect('account')
+#
+def info_view(request: HttpRequest):
+    return render(request, 'Info.html')
+#
+def find_station(request: HttpRequest):
+    return render(request, 'FindStation.html')
