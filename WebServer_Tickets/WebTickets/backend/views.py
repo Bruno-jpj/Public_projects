@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
 from django.http import HttpRequest
 from django.views import View
+from django.utils import timezone
+from datetime import datetime
 
 # Models
 from backend.models import (
@@ -19,37 +21,141 @@ from backend.models import (
 # Logics
 
 # home logic
-class HomeLogic(View):
 
+class HomeLogic(View):
     TEMPLATE = 'Home.html'
 
     def get(self, request: HttpRequest):
         return render(request, self.TEMPLATE)
-    #
+
     def post(self, request: HttpRequest):
-
-        # user in session
         user_id = request.session.get('user_id')
-
-        # check user in session
-        if user_id != None:
-            print(f"User logged in session is {user_id}")
+        if not user_id:
+            return redirect('account')
 
         action = request.POST.get('action')
+
+        if action == "buysubscription":
+            return self.handle_buysubscription(request, user_id)
+        elif action == "buyticket":
+            return self.handle_buyticket(request, user_id)
+        else:
+            messages.error(request, "Azione non riconosciuta.")
+            return redirect('account')
+
+    def handle_buysubscription(self, request: HttpRequest, user_id):
+        data_inizio = timezone.now()
+        partenza = request.POST.get('stazione_partenza')
+        arrivo = request.POST.get('stazione_arrivo')
+        data_fine_str = request.POST.get('data')
+        n_passeggeri = request.POST.get('numero_passeggeri')
+        classe_vagone = request.POST.get('classe')
+
         try:
-            if action == "buysubscription":
-                return self.buysubscription(request)
-            elif action == "buyticket":
-                return self.buyticket(request)
-            else:
-                print("Errore. Gestione action form html")
-        except Exception as e:
-            print(f"Errore. try-except action form")
+            data_fine = datetime.strptime(data_fine_str, '%Y-%m-%d')
+        except ValueError:
+            messages.error(request, "Formato data non valido.")
+            return self.get(request)
+
+        tratta = Tratta.objects.filter(
+            stazione_partenza=partenza,
+            stazione_arrivo=arrivo
+        ).first()
+        if not tratta:
+            messages.error(request, "Tratta non trovata.")
+            return self.get(request)
+
+        treni_partenza = Trenostazione.objects.filter(stazione_id=partenza).values_list('treno_id', flat=True)
+        treni_arrivo = Trenostazione.objects.filter(stazione_id=arrivo).values_list('treno_id', flat=True)
+        treni_comuni = set(treni_partenza).intersection(treni_arrivo)
+
+        if not treni_comuni:
+            messages.error(request, "Nessun treno disponibile.")
+            return self.get(request)
+
+        treno_id = list(treni_comuni)[0]
+
+        Bigliettoabbonamento.objects.create(
+            data_acquisto=data_inizio,
+            data_inizio=data_inizio,
+            data_fine=data_fine,
+            prezzo=0.0,
+            classe_vagone=classe_vagone,
+            numero_passeggeri=n_passeggeri,
+            utente_id=user_id,
+            treno_id=treno_id,
+            tratta_id=tratta.id
+        )
+
+        messages.success(request, "Abbonamento acquistato con successo.")
+        return redirect('account')
+
+    def handle_buyticket(self, request: HttpRequest, user_id):
+        data_acquisto = timezone.now()
+
+        # 1. Dati dal form
+        partenza = request.POST.get('stazione_partenza')
+        arrivo = request.POST.get('stazione_arrivo')
+        data_viaggio_str = request.POST.get('data')  # nome input HTML: <input type="date" name="data">
+        n_passeggeri = request.POST.get('numero_passeggeri')
+        classe_vagone = request.POST.get('classe')
+
+        # 2. Parsing data viaggio
+        try:
+            data_viaggio = datetime.strptime(data_viaggio_str, '%Y-%m-%d')
+        except ValueError:
+            messages.error(request, "Data del viaggio non valida.")
+            return self.get(request)
+
+        # 3. Trova la tratta tra le stazioni
+        tratta = Tratta.objects.filter(
+            stazione_partenza=partenza,
+            stazione_arrivo=arrivo
+        ).first()
+
+        if not tratta:
+            messages.error(request, "Tratta non trovata.")
+            return self.get(request)
+
+        # 4. Trova un treno disponibile sulla tratta
+        treni_partenza = Trenostazione.objects.filter(stazione_id=partenza).values_list('treno_id', flat=True)
+        treni_arrivo = Trenostazione.objects.filter(stazione_id=arrivo).values_list('treno_id', flat=True)
+        treni_comuni = set(treni_partenza).intersection(treni_arrivo)
+
+        if not treni_comuni:
+            messages.error(request, "Nessun treno disponibile per questa tratta.")
+            return self.get(request)
+
+        treno_id = list(treni_comuni)[0]  # seleziona il primo treno disponibile
+
+        # 5. Crea il biglietto (viaggio singolo: data_inizio = data_fine)
+        Bigliettoabbonamento.objects.create(
+            data_acquisto=data_acquisto,
+            data_inizio=data_viaggio,
+            data_fine=data_viaggio,
+            prezzo=00.00,  # prezzo fittizio, puoi calcolarlo dinamicamente
+            classe_vagone=classe_vagone,
+            numero_passeggeri=n_passeggeri,
+            utente_id=user_id,
+            treno_id=treno_id,
+            tratta_id=tratta.id
+        )
+
+        messages.success(request, "Biglietto acquistato con successo.")
+        return redirect('account')
+def account(request: HttpRequest):
+    try:
+        # user in session
+        user_id = request.session.get('user_id')
+        # check user in session
+        if user_id != None:
+            print(f"user logged in session is {user_id}")
+            #
+        else:
+            return redirect('login')
+    except Utente.DoesNotExist:
+        messages.info(request, "Utente non trovato.")
+        return redirect('login')
     #
-    def buysubscription(self, request: HttpRequest):
-        print("")
-    #
-    def buyticket(self, request: HttpRequest):
-        print("")
-    #
+    return render(request, 'Account.html')
 #
