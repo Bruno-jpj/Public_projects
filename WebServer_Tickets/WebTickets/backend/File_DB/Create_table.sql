@@ -5,6 +5,7 @@ DROP TABLE if EXISTS BigliettoAbbonamento;
 DROP TABLE if EXISTS Tratta;
 DROP TABLE if EXISTS Treno;
 DROP TABLE if EXISTS Stazione;
+Drop TABLE if EXISTS TrattaStazione;
 --
 CREATE TABLE if NOT EXISTS Utente(
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,11 +51,11 @@ FOREIGN KEY(stazione_id) REFERENCES Stazione(id) on DELETE CASCADE on UPDATE CAS
 --
 CREATE TABLE if NOT EXISTS Tratta(
 id INTEGER PRIMARY KEY AUTOINCREMENT,
-durata time NOT NULL,
+durata time NOT NULL, -- hh:mm:ss
 stazione_arrivo INTEGER NOT NULL,
 stazione_partenza INTEGER NOT NULL,
-FOREIGN KEY(stazione_arrivo) REFERENCES Stazione(id) on DELETE CASCADE on UPDATE CASCADE,
-FOREIGN key(stazione_partenza) REFERENCES Stazione(id) on DELETE CASCADE on UPDATE CASCADE
+FOREIGN KEY(stazione_arrivo) REFERENCES Stazione(id) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY(stazione_partenza) REFERENCES Stazione(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 --
 CREATE TABLE if NOT EXISTS BigliettoAbbonamento(
@@ -71,4 +72,15 @@ tratta_id INTEGER NOT NULL,
 FOREIGN KEY(utente_id) REFERENCES Utente(id) on DELETE CASCADE on UPDATE CASCADE,
 FOREIGN KEY(treno_id) REFERENCES Treno(id) on DELETE CASCADE on UPDATE CASCADE,
 FOREIGN KEY(tratta_id) REFERENCES Tratta(id) on DELETE CASCADE on UPDATE CASCADE
+);
+--
+CREATE TABLE if NOT EXISTS TrattaStazione(
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+tratta_id INTEGER NOT NULL,
+stazione_id INTEGER NOT NULL,
+ordine INTEGER NOT NULL, -- es. 1 = partenza, 2 = fermata intermedia, ..., N = arrivo
+orario_arrivo time,
+orario_partenza time,
+FOREIGN KEY(tratta_id) REFERENCES Tratta(id) on DELETE CASCADE on UPDATE CASCADE,
+FOREIGN KEY(stazione_id) REFERENCES Stazione(id) on DELETE CASCADE on UPDATE CASCADE
 );
