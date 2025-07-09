@@ -48,4 +48,18 @@ collegamenti:
 -> login.html
 logiche:
 crea nuovo utente e poi rimanda al login
-# 
+#
+
+
+#
+Campi del Biglietto
+- Data acquisto (Biglietto_Abbonamento: data_acquisto)
+- Data del viaggio (Biglietto_Abbonamento: data_inizio, data_fine)
+- Anagrafica (Biglietto_Abbonamento: utente_id)
+- Stazione partenza ()
+- Stazione arrivo ()
+- Tratta riferimento (tratta_id)
+- Numero passeggeri ()
+- Classe vagone ()
+
+Campi dell'Abbonamento

@@ -11,8 +11,8 @@
         <head class="header">
             <div class="divbar">
                 <nav class="navbar">
-                    <a href="{% url 'home_view' %}">Home</a>
-                    <form method="POST" action="{% url 'log_out_view' %}">
+                    <a href="{% url 'home' %}">Home</a>
+                    <form method="POST" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit">Logout</button>
                     </form>
@@ -21,7 +21,7 @@
         </head>
         <main class="main">
             <div class="container">
-                <form action="#" method="post">
+                <form action="#" method="POST">
                     {% csrf_token %}
                     <h2>Log In</h2>
 
@@ -39,7 +39,7 @@
                     {% endfor %}
                 {% endif %}
                 <div class="switch">
-                    <p>Non hai un account? <a href="{% url 'signup_view' %}">Registrati</a></p>
+                    <p>Non hai un account? <a href="{% url 'signup' %}">Registrati</a></p>
                 </div>
             </div>
         </main>

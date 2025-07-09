@@ -13,7 +13,7 @@
                 <nav class="navbar">
                     <div class="logo">WebTickets</div>
                     <div class="nav-links">
-                        <a href="{% url  '' %}">Account</a>
+                        <a href="{% url  'account' %}">Account</a>
                         <a href="{% url  '' %}">News&Info</a>
                         <a href="{% url  '' %}">NewsOneStation</a>
                     </div>
@@ -73,7 +73,7 @@
                                     <option value="seconda">Seconda Classe</option>
                                 </select>
 
-                                <button value="#" name="ticket" type="submit">Acquista Biglietto</button>
+                                <button value="ticket" name="ticket" type="submit">Acquista Biglietto</button>
                             </form>
                             {% if messages %}
                                 {% for message in messages%}
@@ -121,7 +121,7 @@
                                     <option value="mensile">Mensile</option>
                                     <option value="annuale">Annuale</option>
                                 </select>
-                                <button value="#" name="subscription" type="submit">Acquista Abbonamento</button>
+                                <button value="subscription" name="subscription" type="submit">Acquista Abbonamento</button>
                             </form>
                             {% if messages %}
                                 {% for message in messages%}

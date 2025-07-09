@@ -17,7 +17,7 @@ def user_is_logged_in(func):
         if user_id is not None:
             try:
                 # creo oggetto utente controllando che esista con l'id preso e quello del DB
-                User_obj = Utente.objects.get(id=user_id)
+                User_obj = Utente.objects.get(id = user_id)
 
                 # stampo id e username
                 print(f"ID User: [{user_id}] & UserName: [{User_obj.username}]")

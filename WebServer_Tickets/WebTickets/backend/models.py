@@ -1,4 +1,4 @@
-# This is an auto-generated Django model module.
+﻿# This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
 #   * Make sure each model has one field with primary_key=True
@@ -15,9 +15,9 @@ class Bigliettoabbonamento(models.Model):
     prezzo = models.FloatField()
     classe_vagone = models.TextField()
     numero_persone = models.IntegerField()
-    utente = models.ForeignKey('Utente', on_delete=models.CASCADE)
-    treno = models.ForeignKey('Treno', on_delete=models.PROTECT)
-    tratta = models.ForeignKey('Tratta', on_delete=models.PROTECT)
+    utente = models.ForeignKey('Utente', models.DO_NOTHING)
+    treno = models.ForeignKey('Treno', models.DO_NOTHING)
+    tratta = models.ForeignKey('Tratta', models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -29,7 +29,7 @@ class Metodopagamento(models.Model):
     numero_carta = models.IntegerField()
     cvv = models.IntegerField()
     data_scadenza = models.DateField(blank=True, null=True)
-    utente = models.ForeignKey('Utente', on_delete=models.CASCADE)
+    utente = models.ForeignKey('Utente', models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -47,12 +47,24 @@ class Stazione(models.Model):
 
 class Tratta(models.Model):
     durata = models.TimeField()
-    stazione_arrivo = models.ForeignKey(Stazione, on_delete=models.PROTECT, db_column='stazione_arrivo')
-    stazione_partenza = models.ForeignKey(Stazione, on_delete=models.PROTECT, db_column='stazione_partenza', related_name='tratta_stazione_partenza_set')
+    stazione_arrivo = models.ForeignKey(Stazione, models.DO_NOTHING, db_column='stazione_arrivo')
+    stazione_partenza = models.ForeignKey(Stazione, models.DO_NOTHING, db_column='stazione_partenza', related_name='tratta_stazione_partenza_set')
 
     class Meta:
         managed = False
         db_table = 'Tratta'
+
+
+class Trattastazione(models.Model):
+    tratta = models.ForeignKey(Tratta, models.DO_NOTHING)
+    stazione = models.ForeignKey(Stazione, models.DO_NOTHING)
+    ordine = models.IntegerField()
+    orario_arrivo = models.TimeField(blank=True, null=True)
+    orario_partenza = models.TimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'TrattaStazione'
 
 
 class Treno(models.Model):
@@ -67,8 +79,8 @@ class Treno(models.Model):
 class Trenostazione(models.Model):
     orario_arrivo = models.DateTimeField()
     orario_partenza = models.DateTimeField()
-    treno = models.ForeignKey(Treno, on_delete=models.CASCADE)
-    stazione = models.ForeignKey(Stazione, on_delete=models.CASCADE)
+    treno = models.ForeignKey(Treno, models.DO_NOTHING)
+    stazione = models.ForeignKey(Stazione, models.DO_NOTHING)
 
     class Meta:
         managed = False

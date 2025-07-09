@@ -11,7 +11,7 @@
     <head class="header">
         <div class="divbar">
             <nav class="navbar">
-                <a href="{% url '' %}">Home</a>
+                <a href="{% url 'home' %}">Home</a>
                 <form method="POST" action="{% url '' %}">
                     {% csrf_token %}
                     <button type="submit">Logout</button>

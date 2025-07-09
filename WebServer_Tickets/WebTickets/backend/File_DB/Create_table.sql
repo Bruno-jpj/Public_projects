@@ -60,12 +60,15 @@ FOREIGN KEY(stazione_partenza) REFERENCES Stazione(id) ON DELETE CASCADE ON UPDA
 --
 CREATE TABLE if NOT EXISTS BigliettoAbbonamento(
 id INTEGER PRIMARY KEY AUTOINCREMENT,
-data_acquisto datetime NOT NULL,
-data_inizio datetime NOT NULL,
-data_fine datetime NOT NULL,
+data_acquisto TEXT DEFAULT(CURRENT_TIMESTAMP),
+data_inizio date NOT NULL,
+data_fine date NOT NULL,
 prezzo REAL NOT NULL,
 classe_vagone TEXT NOT NULL,
 numero_persone INTEGER NOT NULL,
+tipo_abbonamento TEXT,
+isbiglietto INT NOT NULL,
+isabbonamento INT NOT NULL,
 utente_id INTEGER NOT NULL,
 treno_id INTEGER NOT NULL,
 tratta_id INTEGER NOT NULL,
