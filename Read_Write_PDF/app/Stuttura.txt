@@ -1,3 +1,3 @@
 1) GUI Grafica app: [flet] compatibile per web + app standalone
 2) Manipolazione PDF: [PyPDF2] / [pdfplumber] per leggere, [reportlab] / [fpdf2] per scrivere
-3)
+3) pippo
