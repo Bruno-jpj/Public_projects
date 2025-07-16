@@ -1,0 +1,4 @@
+# ottiene i requirements
+1: pip freeze > requirements.txt
+# installa i requirements
+2: pip install -r requirements.txt

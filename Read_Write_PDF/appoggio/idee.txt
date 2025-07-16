@@ -1,0 +1,38 @@
+class HomePage(View):
+    TEMPLATE = 'home.html'
+
+    @show_pdf
+    def post(self, request, *args, **kwargs):
+        selected_pdf = request.POST.get('selected_pdf')
+        if not selected_pdf:
+            messages.error(request, "Nessun file selezionato.")
+            return render(request, self.TEMPLATE, {"pdf_files": request.pdf_files})
+
+        # esempio di controllo
+        if selected_pdf.endswith(".pdf"):
+            messages.success(request, f"Hai scelto: {selected_pdf}")
+            # Aggiungi logica: leggere, scrivere, salvare...
+        else:
+            messages.error(request, "Formato non valido.")
+
+        return render(request, self.TEMPLATE, {"pdf_files": request.pdf_files})
+#
+@show_pdf
+def post(self, request, *args, **kwargs):
+    action = request.POST.get('action')
+    if not action:
+        messages.error(request, "Azione non definita.")
+    else:
+        verb, pdf = action.split(":", 1)
+        if pdf not in request.pdf_files:
+            messages.error(request, "PDF non valido.")
+        else:
+            if verb == 'read':
+                # Leggi PDF
+            elif verb == 'write':
+                # Scrivi PDF
+            elif verb == 'save':
+                # Salva PDF
+            else:
+                messages.error(request, "Azione sconosciuta.")
+    return render(request, self.TEMPLATE, {"pdf_files": request.pdf_files})

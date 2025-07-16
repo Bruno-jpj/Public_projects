@@ -1,0 +1,118 @@
+/* home.css */
+:root {
+    --primary-color: #0057b8;
+    --background: #f4f4f4;
+    --text: #222;
+    --button-bg: #0057b8;
+    --button-hover: #003f8a;
+    --button-text: #fff;
+    --font: 'Inter', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font);
+    background-color: var(--background);
+    color: var(--text);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Header */
+.header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1.5rem 0;
+    text-align: center;
+}
+
+.header h1 {
+    margin-bottom: 0.25rem;
+    font-size: 2rem;
+}
+
+.header .tagline {
+    font-size: 1rem;
+    font-weight: 400;
+    opacity: 0.85;
+}
+
+/* Navigation */
+.nav {
+    margin-top: 1rem;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border: 2px solid white;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.nav a:hover {
+    background-color: white;
+    color: var(--primary-color);
+}
+
+/* Main */
+.main {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+.menu {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.menu button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.menu button:hover {
+    background-color: var(--button-hover);
+}
+
+.pdf-display {
+    min-height: 300px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+/* Footer */
+.footer {
+    background-color: #222;
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 0.9rem;
+    margin-top: auto;
+}
