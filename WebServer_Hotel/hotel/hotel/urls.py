@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from backend.views import (
+    HomeLogic,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('',HomeLogic.as_view(), name="home")
 ]
