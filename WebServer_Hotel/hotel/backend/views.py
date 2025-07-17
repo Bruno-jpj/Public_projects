@@ -18,13 +18,13 @@ class HomeLogic(View):
                 choice = request.POST.get('redirect')
                 
                 if choice == 'aboutus':
-                    return redirect('chisiamo.html')
+                    return render(request, 'chisiamo.html')
                 elif choice == 'hotel':
-                    return redirect('hotel.html')
+                    return render(request, 'hotel.html')
                 elif choice == 'resturant':
-                    return redirect('ristorante.html')
+                    return render(request, 'ristorante.html')
                 elif choice == 'events':
-                    return redirect('eventi.html')
+                    return render(request, 'eventi.html')
                 else:
                     messages.error("Form Error. Please try again.")
         except Exception as e:

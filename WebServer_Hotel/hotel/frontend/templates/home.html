@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
 <body>
     <main>
@@ -75,9 +76,19 @@
             </p>
             <button type="submit" name="redirect" value="events">SCOPRI DI PIÙ</button>
         </form>
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages%}
+                    <p style="color: red;">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
     </main>
     <footer>
-        <!-- Gallery / Recensioni di google -->
+        <div class="footer-content">
+            <p>&copy; 2025 Hotel Ristorante Il Castagno - Orciano di Pesaro</p>
+            <p>Via Castagno 12, Terre Roveresche (PU) | Tel: 0721 123456 | Email: info@ilcastagno.it</p>
+        </div>
     </footer>
 </body>
 </html>
