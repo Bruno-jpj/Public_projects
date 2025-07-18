@@ -64,6 +64,7 @@ nav ul li a:hover {
     box-shadow: none;
     min-height: 600px;
 }
+
 /* Background Images (esempio: personalizzabili) */
 .about      { background-image: url('../img/about.jpg'); }
 .hotel      { background-image: url('../img/hotel.jpg'); }
