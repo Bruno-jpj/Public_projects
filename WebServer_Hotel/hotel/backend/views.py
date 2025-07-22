@@ -6,10 +6,10 @@ from django.views import View
 
 # Create your views here.
 class HomeLogic(View):
-    TEMPLATE = 'home.html'
+    HOME_TEMPLATE = 'home.html'
 
     def get(self, request: HttpRequest):
-        return render(request, self.TEMPLATE)
+        return render(request, self.HOME_TEMPLATE)
     #
     def post(self, request: HttpRequest):
         try:
@@ -31,4 +31,40 @@ class HomeLogic(View):
             messages.error(f"Error n. {e}")
         #
     #
+#
+def hotel_reservation(request: HttpRequest):
+    HOTEL_TEMPLATE = 'hotel.html'
+    #
+    try:
+        if request.method == "POST":
+            name = request.POST.get('redirect')
+            if name == 'prenotazione_hotel':
+                return render(request, 'prenotazioni.html')
+    except Exception as e:
+        messages.error(f"Error in reservation btn. {e}")
+    return render(request, HOTEL_TEMPLATE)
+#
+def events_reservation(request: HttpRequest):
+    EVENTS_TEMPLATE = 'eventi.html'
+    #
+    try:
+        if request.method == "POST":
+            name = request.POST.get('redirect')
+            if name == 'prenotazione_eventi':
+                return render(request, 'prenotazioni.html')    
+    except Exception as e:
+        messages.error(f"Error in events btn {e}")
+    return render(request, EVENTS_TEMPLATE)
+#
+def resturant_reservation(request: HttpRequest):
+    EVENTS_TEMPLATE = 'ristorante.html'
+    #
+    try:
+        if request.method == "POST":
+            name = request.POST.get('redirect')
+            if name == 'prenotazione_ristorante':
+                return render(request, 'prenotazioni.html')    
+    except Exception as e:
+        messages.error(f"Error in events btn {e}")
+    return render(request, EVENTS_TEMPLATE)
 #
