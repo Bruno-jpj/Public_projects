@@ -1,6 +1,7 @@
 -- DROP TABLE
 DROP TABLE IF EXISTS PrenotazioneTavolo;
 DROP TABLE IF EXISTS PrenotazioneCamera;
+DROP TABLE IF EXISTS Evento;
 DROP TABLE IF EXISTS Tavolo;
 DROP TABLE IF EXISTS Camera;
 DROP TABLE IF EXISTS Utente;
@@ -52,4 +53,13 @@ CREATE TABLE IF NOT EXISTS PrenotazioneTavolo(
     OrarioPrenotazione TIME NOT NULL,
     FOREIGN KEY (idUtente) REFERENCES Utente(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (idTavolo) REFERENCES Tavolo(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Tabella degli eventi
+CREATE TABLE IF NOT EXISTS Evento(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    idUtente INTEGER NOT NULL,
+    TipoEvento TEXT NOT NULL, -- es. matrimonio, compleanno, conferenza, etc.
+    DataEvento DATETIME NOT NULL,
+    FOREIGN KEY (idUtente) REFERENCES Utente(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
