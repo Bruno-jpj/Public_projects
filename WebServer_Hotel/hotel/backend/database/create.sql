@@ -1,65 +1,109 @@
 -- DROP TABLE
-DROP TABLE IF EXISTS PrenotazioneTavolo;
-DROP TABLE IF EXISTS PrenotazioneCamera;
-DROP TABLE IF EXISTS Evento;
-DROP TABLE IF EXISTS Tavolo;
-DROP TABLE IF EXISTS Camera;
-DROP TABLE IF EXISTS Utente;
+DROP TABLE if EXISTS TableReservation;
+DROP TABLE if EXISTS RoomReservation;
+DROP TABLE if EXISTS RestaurantTable;
+DROP TABLE if EXISTS HotelRooms;
+DROP TABLE if EXISTS Events;
+DROP TABLE if EXISTS User;
+DROP TABLE if EXISTS Restaurant;
+DROP TABLE if EXISTS Hotel;
 
--- Tabella degli utenti
-CREATE TABLE IF NOT EXISTS Utente(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    Nome TEXT NOT NULL,
-    Cognome TEXT NOT NULL,
-    CodiceFiscale TEXT NOT NULL UNIQUE,
-    DataNascita DATE NOT NULL,
-    Cellulare TEXT NOT NULL,
-    CittaResidenza TEXT NOT NULL
+-- CREATE TABLE
+-- 
+CREATE TABLE if not EXISTS User(
+ID integer primary key autoincrement,
+Name text not null,
+Surname text not null,
+MobilePhone text not null unique, 
+Email text not null unique,
+Password text not null,
+FiscalCode text not null,
+DateBirth date not null,
+CityResidence text not null,
+StreetResidence text not null,
+constraint chk_pwd check (length(Password) >= 8),
+constraint chk_email check (Email like '%@%.%')
 );
-
--- Camere singole
-CREATE TABLE IF NOT EXISTS Camera(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    NumeroCamera TEXT NOT NULL UNIQUE,
-    Tipo TEXT NOT NULL, -- es. singola, doppia, suite
-    Stato TEXT NOT NULL -- libera, occupata, manutenzione
+--
+CREATE TABLE if not EXISTS Restaurant(
+ID integer primary key autoincrement,
+Name text not null,
+City text not null,
+Street text not null,
+ClosingDays text not null, -- (monday)
+OpeningDays text not null, -- (tuesday, wednesday, thursday, friday, saturday, sunday)
+ClosingTime time not null,
+OpeningTime time not null,
+Phone text not null unique,
+Email text not null unique,
+TotTables integer not null
 );
-
--- Prenotazioni camere
-CREATE TABLE IF NOT EXISTS PrenotazioneCamera(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    idUtente INTEGER NOT NULL,
-    idCamera INTEGER NOT NULL,
-    DataInizio DATE NOT NULL,
-    DataFine DATE NOT NULL,
-    FOREIGN KEY (idUtente) REFERENCES Utente(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (idCamera) REFERENCES Camera(id) ON DELETE CASCADE ON UPDATE CASCADE
+--
+CREATE TABLE if not EXISTS Hotel(
+ID integer primary key autoincrement,
+Name text not null,
+City text not null,
+Street text not null,
+Phone text not null unique,
+Email text not null unique,
+TotRooms integer not null
 );
-
--- Tavoli singoli
-CREATE TABLE IF NOT EXISTS Tavolo(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    NumeroTavolo TEXT NOT NULL UNIQUE,
-    Posizione TEXT NOT NULL, -- interno, esterno
-    Stato TEXT NOT NULL -- libero, occupato
+--
+CREATE TABLE if not EXISTS Events(
+ID integer primary key autoincrement,
+IDUser integer not null,
+type text not null, -- wedding / birthday / meeting
+EventDate date not null,
+Location text not null, -- inside / outside
+GuestsNumber integer not null, -- min 10
+Notes text not null,
+foreign key (IDUser) references User(ID),
+constraint chk_gst_events check (GuestsNumber >= 10)
 );
-
--- Prenotazioni tavolo
-CREATE TABLE IF NOT EXISTS PrenotazioneTavolo(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    idUtente INTEGER NOT NULL,
-    idTavolo INTEGER NOT NULL,
-    DataPrenotazione DATE NOT NULL,
-    OrarioPrenotazione TIME NOT NULL,
-    FOREIGN KEY (idUtente) REFERENCES Utente(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (idTavolo) REFERENCES Tavolo(id) ON DELETE CASCADE ON UPDATE CASCADE
+--
+CREATE TABLE if not EXISTS HotelRooms(
+ID integer primary key autoincrement,
+IDHotel integer not null,
+RoomNumber text not null, -- 101, 201, 301
+Status text not null, -- (free / taken / maintance)
+Type text not null, --(single room [1 person] / double room [2 people - king size bed] / twin room [2 people - 2 beds] / triple room [3 people] / suite)
+foreign key (IDHotel) references Hotel(ID)
 );
-
--- Tabella degli eventi
-CREATE TABLE IF NOT EXISTS Evento(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    idUtente INTEGER NOT NULL,
-    TipoEvento TEXT NOT NULL, -- es. matrimonio, compleanno, conferenza, etc.
-    DataEvento DATETIME NOT NULL,
-    FOREIGN KEY (idUtente) REFERENCES Utente(id) ON DELETE CASCADE ON UPDATE CASCADE
+--
+CREATE TABLE if not EXISTS RestaurantTable(
+ID integer primary key autoincrement,
+IDRestaurant integer not null,
+Status text not null, 
+Position text not null, -- (inside / outside)
+TableNumber integer not null,
+foreign key (IDRestaurant) references Restaurant(ID)
+);
+--
+CREATE TABLE if not EXISTS RoomReservation(
+ID integer primary key autoincrement,
+IDUser integer not null,
+IDHotelRoom integer not null,
+CheckInDate date not null,
+CheckOutDate date not null, -- YYYY-MM-DD
+PeopleNumber integer not null, -- min 1
+ReservationStatus text not null, -- (confirmed / pending / cancelled)
+Notes text not null,
+foreign key (IDUser) references User(ID),
+foreign key (IDHotelRoom) references HotelRooms(ID),
+constraint chk_gst_room check (PeopleNumber >= 1),
+constraint chk_dates check (CheckOutDate >= CheckInDate)
+);
+--
+CREATE TABLE if not EXISTS TableReservation(
+ID integer primary key autoincrement,
+IDUser integer not null,
+IDRestaurantTable integer not null,
+ReservationDate date not null,
+ReservationTime time not null,
+PeopleNumber integer not null, -- min 1
+ReservationStatus text not null, -- (confirmed / pending / cancelled)
+Notes text not null,
+foreign key (IDUser) references User(ID),
+foreign key (IDRestaurantTable) references RestaurantTable(ID),
+constraint chk_gst_table check (PeopleNumber >= 1)
 );

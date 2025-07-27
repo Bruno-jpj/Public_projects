@@ -1,0 +1,89 @@
+User [1] -> [N] TableReservation [N] <- [1] ResturantTable [N] <- [1] Restaurant
+
+User [1] -> [N] RoomReservation [N] <- [1] HotelRooms [N] <- [1] Hotel
+
+User [1] -> [N] Events
+
+Attributes for all tables
+
+1. User:
+- ID -> integer
+- Name -> text
+- Surname -> text
+- MobilePhone -> text
+- Email -> text
+- Password -> text
+- Fiscal Code -> text
+- DateBirth -> date
+- CityResidence -> text
+- StreetResidence -> text
+
+# this table have only 1 row
+2. Restaurant: 
+- ID -> integer
+- Name -> text
+- City -> text (es. Rome)
+- Street -> text (es. via roma 1)
+- ClosingDays -> text (monday)
+- OpeningDays -> text (tuesday, wednesday, thursday, friday, saturday, sunday)
+- ClosingTime -> time
+- OpeningTime -> time
+- Phone -> text
+- Email -> text
+- TotTables -> integer
+
+# this table have only 1 row
+3. Hotel:
+- ID -> integer
+- Name -> text
+- City -> text
+- Street -> text
+- Phone -> text
+- Email -> text
+- TotRooms -> integer
+
+4. ResturantTable:
+- ID -> integer
+- IDResturant -> integer
+- Status -> text (free / taken)
+- Position -> text (inside / outside)
+- TableNumber -> integer
+
+5. TableReservation:
+- ID -> integer
+- IDUser -> integer
+- IDResturantTable -> integer
+- DateReservation -> date
+- TimeReservation -> time
+- PeopleNumber -> integer
+- ReservationStatus -> text (confirmed / pending / cancelled)
+- Notes -> text
+
+6. HotelRooms:
+- ID -> integer
+- RoomNumber -> text (101, 102)
+- Status -> text (free / taken / maintance)
+- Type -> text (single room [1 person] / double room [2 people - king size bed] / twin room [2 people - 2 beds] / triple room [3 people] / suite)
+
+
+7. RoomReservation:
+- ID -> integer
+- IDUser -> integer
+- IDHotelRooms -> integer
+- InitialDate -> date
+- FinalDate -> date
+- PeopleNumber -> integer
+- ReservationStatus -> text (confirmed / pending / cancelled)
+- Notes
+
+8. Events:
+- ID -> integer
+- IDUser -> integer
+- Type -> text (wedding / birthday / meeting)
+- EventDate -> date
+- Location -> text (inside / outside)
+- GuestsNumber -> integer (min 10)
+- Notes -> text
+
+-- controlla la lunghezza minima della pwd
+CONSTRAINT chk_pwd CHECK (LENGTH(Password) >= 8)
