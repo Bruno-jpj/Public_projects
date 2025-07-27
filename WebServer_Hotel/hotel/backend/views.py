@@ -1,10 +1,24 @@
+# django libraries
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
 from django.http import HttpRequest, HttpResponse, Http404
 from django.views import View
 
+# models
+from backend.models import (
+    Events,
+    Hotel,
+    Hotelrooms,
+    Restaurant,
+    Restauranttable,
+    Roomreservation,
+    Tablereservation,
+    User
+)
+
 # Create your views here.
+
 # home page view
 class HomeLogic(View):
     HOME_TEMPLATE = 'home.html'
