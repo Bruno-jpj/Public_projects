@@ -1,0 +1,4 @@
+CMD for lunching file:
+
+python manage.py name_cmd
+ex. python manage.py insert_restaurant

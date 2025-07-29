@@ -73,7 +73,7 @@ foreign key (IDHotel) references Hotel(ID)
 CREATE TABLE if not EXISTS RestaurantTable(
 ID integer primary key autoincrement,
 IDRestaurant integer not null,
-Status text not null, 
+Status text not null, -- (free / taken)
 Position text not null, -- (inside / outside)
 TableNumber integer not null,
 foreign key (IDRestaurant) references Restaurant(ID)
