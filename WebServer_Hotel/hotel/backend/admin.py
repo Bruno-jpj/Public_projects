@@ -18,3 +18,4 @@ admin.site.register(Restauranttable)
 admin.site.register(Roomreservation)
 admin.site.register(Tablereservation)
 admin.site.register(User)
+
