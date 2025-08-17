@@ -21,12 +21,16 @@ from backend.views import (
     login,
     logout,
     signup,
+    aboutus_view,
     events_reservation,
     events_view,
+    events_menu,
     hotel_reservation,
     hotel_view,
-    resturant_reservation,
+    restaurant_reservation,
     resturant_view,
+    tortelloni_views,
+    tacon_views,
 )
 
 urlpatterns = [
@@ -35,10 +39,14 @@ urlpatterns = [
     path('login/', login, name="login"),
     path('signup/', signup, name="signup"),
     path('logout/', logout, name="logout"),
+    path('aboutus/', aboutus_view, name="aboutus"),
     path('events_reservation/', events_reservation, name="events_res"),
-    path('events_view/', events_view, name="events"),
+    path('events/', events_view, name="events"),
+    path('events_menu/', events_menu, name="events_menu"),
     path('hotel_reservation/', hotel_reservation, name="hotel_res"),
-    path('hotel_view/', hotel_view, name="hotel"),
-    path('restaurant_reservation/', resturant_reservation, name="restaurant_res"),
-    path('restaurant_view/', resturant_view, name="restaurant")
+    path('hotel/', hotel_view, name="hotel"),
+    path('restaurant_reservation/', restaurant_reservation, name="restaurant_res"),
+    path('restaurant/', resturant_view, name="restaurant"),
+    path('tortelloni/', tortelloni_views, name="tortelloni"),
+    path('tacon/', tacon_views, name="tacon")
 ]

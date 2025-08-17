@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Hotel Ristorante Il Castagno</h1>
+            <nav>
+                <form action="{% url 'home' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="redirect" value="home">HOME</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="auth-container">
+        <h2>Registrazione</h2>
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Nome" required>
+            <input type="text" name="surname" placeholder="Cognome" required>
+            <input type="tel" name="mobilephone" placeholder="Numero di telefono" required>
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password1" placeholder="Password" required>
+            <input type="password" name="password2" placeholder="Conferma Password" required>
+            <input type="text" name="fiscalcode" placeholder="Codice Fiscale" required>
+            <input type="date" name="datebirth" placeholder="Data di nascita" required>
+            <input type="text" name="cityresidence" placeholder="Città di residenza" required>
+            <input type="text" name="streetresidence" placeholder="Via di residenza" required>
+            <button type="submit">Registrati</button>
+        </form>
+        <p>Hai già un account? <a href="{% url 'login' %}">Accedi</a></p>
+    </div>
+
+    <!-- Messaggi -->
+    <div class="messages">
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    </main>
+    <footer></footer>
+</body>
+</html>

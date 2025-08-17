@@ -12,14 +12,14 @@
         <div class="container">
             <h1>Hotel Ristorante Il Castagno</h1>
             <nav>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Chi Siamo</a></li>
-                    <li><a href="#">Hotel</a></li>
-                    <li><a href="#">Ristorante</a></li>
-                    <li><a href="#">Eventi</a></li>
-                    <li><a href="#">Contatti</a></li>
-                </ul>
+                <form action="{% url 'login' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="redirect" value="login">LOGIN</button>
+                </form>
+                <form action="{% url 'signup' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="redirect" value="signup">SIGN UP</button>
+                </form>
             </nav>
         </div>
     </header>
@@ -42,7 +42,7 @@
                     nostro territorio. 
                 </p>
             </div>
-            <form action="#" method="post">
+            <form action="{% url 'aboutus' %}" method="post">
                 {% csrf_token %}
                 <button type="submit" name="redirect" value="aboutus">SCOPRI DI PIÙ</button>
             </form>
@@ -59,7 +59,7 @@
                     ampio parco giochi per bambini.
                 </p>
             </div>
-            <form action="#" method="post">
+            <form action="{% url 'hotel' %}" method="post">
                 {% csrf_token %}
                 <button type="submit" name="redirect" value="hotel">SCOPRI DI PIÙ</button>
             </form>
@@ -79,7 +79,7 @@
                     gusto, il nostro ristorante con asporto ti permette di portare a casa i tuoi piatti preferiti.
                 </p>
             </div>
-            <form action="#" method="post">
+            <form action="{% url 'restaurant' %}" method="post">
                 {% csrf_token %}
                 <button type="submit" name="redirect" value="resturant">SCOPRI DI PIÙ</button>
             </form>
@@ -111,7 +111,7 @@
                     personalizzabili tra cui poter scegliere.
                 </p>
             </div>
-            <form action="#" method="post">
+            <form action="{% url 'events' %}" method="post">
                 {% csrf_token %}
                 <button type="submit" name="redirect" value="events">SCOPRI DI PIÙ</button>
             </form>

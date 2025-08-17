@@ -1,0 +1,157 @@
+/* Reset base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+/* Header */
+header {
+    background-color: #343a40;
+    color: #fff;
+    padding: 1rem 0;
+}
+
+header .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+header nav button {
+    background-color: #ffc107;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+header nav button:hover {
+    background-color: #e0a800;
+}
+
+/* Main centrato */
+main {
+    display: flex;
+    flex-direction: column; /* elementi uno sopra l'altro */
+    align-items: center;    /* centra orizzontalmente */
+    padding: 3rem 0;
+}
+
+/* Auth container */
+.auth-container {
+    background-color: #fff;
+    padding: 2rem 3rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+/* Titolo form */
+.auth-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #343a40;
+}
+
+/* Form inputs */
+.auth-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-container input {
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.auth-container input:focus {
+    border-color: #495057;
+    box-shadow: 0 0 5px rgba(73, 80, 87, 0.3);
+    outline: none;
+}
+
+/* Pulsante Accedi */
+.auth-container button {
+    padding: 0.8rem;
+    background-color: #343a40;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.auth-container button:hover {
+    background-color: #495057;
+}
+
+/* Link registrati */
+.auth-container p {
+    text-align: center;
+    margin-top: 1rem;
+    color: #6c757d;
+}
+
+.auth-container p a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.auth-container p a:hover {
+    text-decoration: underline;
+}
+
+/* Messaggi */
+.messages {
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem auto 0;
+    text-align: center;
+}
+
+.messages p {
+    background-color: #ffc107;
+    color: #212529;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+}
+
+/* Footer */
+footer {
+    height: 50px;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .auth-container {
+        padding: 1.5rem 2rem;
+    }
+}

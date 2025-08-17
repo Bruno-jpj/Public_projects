@@ -11,7 +11,7 @@
     <header>
         <div>
             <h1>
-                 La location perfetta per i tuoi eventi a Orciano di Pesaro
+                La location perfetta per i tuoi eventi a Orciano di Pesaro
             </h1>
         </div>
     </header>
@@ -34,7 +34,7 @@
                     celebrare questi momenti speciali e venite a festeggiare con noi in un'atmosfera 
                     accogliente e ricca di tradizione. 
                 </p>
-                <form action="#" method="get">
+                <form action="{% url 'events_menu' %}" method="post">
                     {% csrf_token %}
                     <button type="submit" name="redirect" value="menu_eventi">SCOPRI I MENÚ</button>
                 </form>
@@ -63,11 +63,19 @@
                 </p>
             </div>
             <div>
-                <form action="#" method="post">
+                <form action="{% url 'events_res' %}" method="post">
                     {% csrf_token %}
                     <button type="submit" name="redirect" value="prenotazione_eventi">Contattaci</button>
                 </form>
             </div>
+        </div>
+        <!-- Messaggi -->
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
         </div>
     </main>
     <footer></footer>

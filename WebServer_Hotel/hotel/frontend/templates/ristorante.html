@@ -32,7 +32,7 @@
                     Pasta fatta a mano: tirata al matterello, con ingredienti genuini, seguendo le ricette di 
                     una volta, come vuole la tradizione e accompagnata da sughi ricchi e saporiti.
                     <div>
-                        <form action="#" method="post">
+                        <form action="{% url 'tortelloni' %}" method="post">
                             {% csrf_token %}
                             <button type="submit" name="redirect" value="ricetta_tortelloni">SCOPRI LA RICETTA DEI NOSTRI TORTELLONI</button>
                         </form>
@@ -48,7 +48,7 @@
                     farina più economici, tra cui quella ottenuta dalle fave. Da questa usanza, sono nati i 
                     tacconi , detti anche “tacòn”. 
                     <div>
-                        <form action="#" method="post">
+                        <form action="{% url 'tacon' %}" method="post">
                             {% csrf_token %}
                             <button type="submit" name="redirect" value="ricetta_tacon">SCOPRI LA RICETTA</button>
                         </form>
@@ -78,11 +78,18 @@
                 </p>
             </div>
             <div>
-                <form action="#" method="post">
+                <form action="{% url 'restaurant_res' %}" method="post">
                     {% csrf_token %}
                     <button type="submit" name="redirect" value="prenotazione_ristorante"> Prenota un tavolo/contattaci </button>
                 </form>
             </div> 
+        </div>
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
         </div>
     </main>
     <footer></footer>

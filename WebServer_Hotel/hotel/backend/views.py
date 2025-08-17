@@ -30,7 +30,7 @@ def login(request: HttpRequest):
             user = User.objects.get(username=username)
             if check_password(password, user.password):
                 request.session['user_id'] = user.id
-                return redirect('HomeLogic')
+                return redirect('home')
             else:
                 messages.error(request, "Username o Password errati")
         except User.DoesNotExist:
@@ -39,8 +39,7 @@ def login(request: HttpRequest):
         return redirect('login')
 
     return render(request, 'login.html')
-#
-#
+# signup
 def signup(request: HttpRequest):
     try:
         if request.method == "POST":
@@ -89,8 +88,9 @@ def signup(request: HttpRequest):
                 messages.error(request, f"Errore, nella creazione dell'utente")
     except Exception as e:
         messages.error(request, f"Errore, nel signup {e}")
-#
-#
+    #
+    return render(request, 'signup.html')
+# logout
 def logout(request: HttpRequest):
     try:
         request.session.flush()
@@ -98,7 +98,6 @@ def logout(request: HttpRequest):
     except Exception as e:
         messages.error(request, f"Errore durante il logout {e}")
         return redirect('account')
-#
 # home page view
 class HomeLogic(View):
     HOME_TEMPLATE = 'home.html'
@@ -113,22 +112,36 @@ class HomeLogic(View):
                 choice = request.POST.get('redirect')
                 
                 if choice == 'aboutus':
-                    return render(request, 'chisiamo.html')
+                    return redirect('aboutus_view')
                 elif choice == 'hotel':
-                    return render(request, 'hotel.html')
+                    return redirect('hotel_view')
                 elif choice == 'resturant':
-                    return render(request, 'ristorante.html')
+                    return redirect('restaurant_view')
                 elif choice == 'events':
-                    return render(request, 'eventi.html')
+                    return redirect('events_view')
+                elif choice == 'login':
+                    return redirect('login')
+                elif choice == 'signup':
+                    return redirect('signup')
                 else:
                     messages.error(request, "Form Error. Please try again.")
                     return render(request, 'HomeLogic')
         except Exception as e:
             messages.error(request, f"Error n. {e}")
         #
+        return redirect('home')
     #
-#
-# hotel view
+# about us redirect 
+def aboutus_view(request: HttpRequest):
+    try:
+        if request.method == "POST":
+            choice = request.POST.get('redirect')
+            if choice == 'aboutus':
+                return render(request, 'chisiamo.html')
+    except Exception as e:
+        print(f"Errore: redirect aboutus")
+    return redirect('home')
+# hotel redirect
 def hotel_view(request: HttpRequest):
     #
     try:
@@ -140,7 +153,9 @@ def hotel_view(request: HttpRequest):
             #
     except Exception as e:
         messages.error(request, f"Error [{e}]")
-#
+    #
+    return render(request, 'hotel.html')
+# hotel room reservation view
 def hotel_reservation(request: HttpRequest):
 
     # get the hotel info
@@ -227,22 +242,21 @@ def hotel_reservation(request: HttpRequest):
         'ObjHotel': ObjHotel,
         'ObjRoom': ObjRoom,
     }
-    return render(request, 'prenotazione_hotel.html', context)
-#
-# events view
+    return render(request, 'prenotazioni_hotel.html', context)
+# events redirect
 def events_view(request: HttpRequest):
     try:
         if request.method == "POST":
             choice = request.POST.get('redirect')
             #
-            if choice == 'prenotazione_hotel':
+            if choice == 'prenotazione_eventi':
                 return render(request, 'prenotazioni_eventi.html')
             #
     except Exception as e:
         messages.error(request, f"Error [{e}]")
     #
-#
-#
+    return render(request, 'eventi.html')
+# events reservarvation view
 def events_reservation(request: HttpRequest):
 
     if request.method == "POST":
@@ -304,9 +318,8 @@ def events_reservation(request: HttpRequest):
             except Exception as e:
                 print(f'Errore nella creazione del events_reservation{e}')
 
-    return render(request, 'prenotazione_eventi.html')
-#
-# resturant view
+    return render(request, 'prenotazioni_eventi.html')
+# resturant table redirect
 def resturant_view(request: HttpRequest):
     try:
         if request.method == "POST":
@@ -318,9 +331,10 @@ def resturant_view(request: HttpRequest):
     except Exception as e:
         messages.error(request, f"Error [{e}]")
     #
-#
-#
+    return render(request, 'ristorante.html')
+# restaurant table reservation
 def restaurant_reservation(request: HttpRequest):
+
     # Recupera l'oggetto ristorante (in questo esempio è fisso con id=1)
     ObjRestaurant = get_object_or_404(Restaurant, id=1)
 
@@ -421,4 +435,37 @@ def restaurant_reservation(request: HttpRequest):
             return redirect('restaurant_reservation')
 
     # Se GET o se non ci sono errori → carica la pagina
-    return render(request, 'prenotazione_ristorante.html', {'ObjTable': ObjTable})
+    return render(request, 'prenotazioni_ristorante.html', {'ObjTable': ObjTable})
+# menu restaurant redirect
+def events_menu(request: HttpRequest):
+    try:
+        if request.method == "POST":
+            choice = request.POST.get('redirect')
+            if choice == 'menu_eventi':
+                return render(request, 'menu_eventi.html')
+    except Exception as e:
+        print(f"Errore nella visione del menu eventi: [{e}]")
+    return render(request, 'eventi.html')
+# recipe tortelloni redirect
+def tortelloni_views(request: HttpRequest):
+    try:
+        if request.method == "POST":
+            choice = request.POST.get('redirect')
+            if choice == 'ricetta_tortelloni':
+                return render(request, 'ricetta_tortelloni.html')
+    except Exception as e:
+        print(f"Errore nella visione della ricetta tortelloni")
+    return redirect('restaurant_view')
+# recipe tacon redirect
+def tacon_views(request: HttpRequest):
+    try:
+        if request.method == "POST":
+            choice = request.POST.get('redirect')
+            if choice == 'ricetta_tacon':
+                return render(request, 'ricetta_tacon.html')
+    except Exception as e:
+        print(f"Errore nella visione della ricetta tacon")
+    return redirect('restaurant_view')
+#
+#
+#

@@ -113,6 +113,7 @@ class User(models.Model):
     name = models.TextField(db_column='Name')  # Field name made lowercase.
     surname = models.TextField(db_column='Surname')  # Field name made lowercase.
     mobilephone = models.TextField(db_column='MobilePhone', unique=True)  # Field name made lowercase.
+    username = models.TextField(db_column='Username', unique=True)
     email = models.TextField(db_column='Email', unique=True)  # Field name made lowercase.
     password = models.TextField(db_column='Password')  # Field name made lowercase.
     fiscalcode = models.TextField(db_column='FiscalCode')  # Field name made lowercase.

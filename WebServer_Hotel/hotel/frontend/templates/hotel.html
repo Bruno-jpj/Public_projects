@@ -61,10 +61,18 @@
             </div>
         </div>
         <div>
-            <form action="#" method="post">
+            <form action="{% url 'hotel_res' %}" method="post">
                 {% csrf_token %}
                 <button type="submit" name="redirect" value="prenotazione_hotel">Prenota una camera/contattaci</button>
             </form>
+        </div>
+        <!-- Messaggi -->
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
         </div>
     </main>
     <footer></footer>
