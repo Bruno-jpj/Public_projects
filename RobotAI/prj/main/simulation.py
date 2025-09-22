@@ -1,6 +1,6 @@
 import pygame as pg
 import random as r
-import numpy as no
+import numpy as np
 
 # special type of tuple, can access element by position or name
 from collections import namedtuple
