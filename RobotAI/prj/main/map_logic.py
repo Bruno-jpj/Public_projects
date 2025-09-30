@@ -10,7 +10,7 @@ def create_map(w, h):
     for x in range(0, w, BLOCK_SIZE):
         for y in range(0, h, BLOCK_SIZE):
             map[(x, y)] = UNKNOWN
-
+    
     return map
 #
 def draw_map(map, ax, w, h):

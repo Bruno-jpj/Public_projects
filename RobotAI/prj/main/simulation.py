@@ -94,26 +94,33 @@ class Simulation:
                 pg.quit()
                 quit()
         
-        self.move(action)
+        old_position = self.robot # saved old position - temporary new_position of move()
 
-        reward = 0
+        self.move(action) # self.robot is updated => self.robot = new_position
+
+        self.reward = 0
+
+        if self.robot not in self.robot_map.keys():
+            self.reward = 2
+            self.frame_since_trophie -= 0.5
+        elif old_position == self.robot:
+            print(f"same last position: {old_position} - {self.robot}")
 
         # max_movement_with_no_trophie => 10 * (640 / 20) + (480 / 20) = 10 * (32 + 24) = 560
         max_frames_no_trophie = 10 * ((self.w // BLOCK_SIZE) + (self.h // BLOCK_SIZE))
 
         if self.is_collision():
-            reward = -10
+            self.reward = -10
             self.score -= 1
             self.frame_since_trophie += 1
         elif self.frame_since_trophie > max_frames_no_trophie:
-            reward = -2
+            self.reward = -2
             self.score -= 0.5
         
         if self.robot == self.trophie:
             self.score += 1
             self.tot_trophies += 1
-            reward = +20
-
+            self.reward = +20
             self.frame_since_trophie = 0
             self.place_trohpie()
             self.frame_iteration = 0
@@ -123,7 +130,7 @@ class Simulation:
         self.update_ui()
         self.clock.tick(SPEED)
 
-        return reward, self.score
+        return self.reward, self.score
     #
     def is_collision(self, pt = None):
         if pt is None:
@@ -192,11 +199,15 @@ class Simulation:
         next_x = max(0, min(self.w - BLOCK_SIZE, next_x))
         next_y = max(0, min(self.h - BLOCK_SIZE, next_y))
 
+        new_position = point(next_x, next_y)
 
         # solo se il passo è valido aggiorna la posizione
-        if not self.is_collision(point(next_x, next_y)):
-            self.robot = point(next_x, next_y)
-            self.robot_map[(next_x, next_y)] = FREE
+        if not self.is_collision(new_position):
+            
+            self.robot = new_position # temporary new_position
+
+            self.robot_map[(self.robot)] = FREE
+
         else:
-            self.robot_map[(next_x, next_y)] = OBSTACLE
+            self.robot_map[(self.robot)] = OBSTACLE
     #

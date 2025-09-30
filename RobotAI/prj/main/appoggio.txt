@@ -342,3 +342,97 @@ class Simulation:
             y -= BLOCK_SIZE
 
         self.robot = point(x, y)
+/***************************************************/
+def step(self, action):
+
+        self.frame_iteration += 1
+        
+        for e in pg.event.get():
+            if e.type == pg.QUIT:
+                pg.quit()
+                quit()
+        #
+
+        self.reward = 0
+
+        self.old_position = self.robot
+
+        new_position, collision = self.move(action) # self.robot is updated => self.new_position = self.robot
+
+        if new_position not in self.robot_map.keys() and not collision:
+            self.reward = 2
+            self.frame_since_trophie -= 0.5
+        if collision:
+            self.robot_map[new_position] = OBSTACLE
+        else:
+            self.robot_map[new_position] = FREE
+        # max_movement_with_no_trophie => 10 * (640 / 20) + (480 / 20) = 10 * (32 + 24) = 560
+        max_frames_no_trophie = 10 * ((self.w // BLOCK_SIZE) + (self.h // BLOCK_SIZE))
+
+        if self.is_collision():
+            self.reward = -10
+            self.score -= 1
+            self.frame_since_trophie += 1
+        elif self.frame_since_trophie > max_frames_no_trophie:
+            self.reward = -2
+            self.score -= 0.5
+        
+        if self.robot == self.trophie:
+            self.score += 1
+            self.tot_trophies += 1
+            self.reward = +20
+            self.frame_since_trophie = 0
+            self.place_trohpie()
+            self.frame_iteration = 0
+        else:
+            self.frame_since_trophie += 1
+
+        self.update_ui()
+        self.clock.tick(SPEED)
+
+        return self.reward, self.score
+def move(self, action):
+        movement = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
+        index = movement.index(self.direction)
+
+        if np.array_equal(action, [1, 0, 0]):
+            new_dir = movement[index] # straight
+        elif np.array_equal(action, [0, 1, 0]):
+            next_index = (index + 1) % 4
+            new_dir = movement[next_index]
+        elif np.array_equal(action, [0, 0, 1]):
+            next_index = (index - 1) % 4
+            new_dir = movement[next_index]
+        else:
+            new_dir = self.direction
+        
+        self.direction = new_dir
+
+        next_x = self.robot.x
+        next_y = self.robot.y
+
+        if self.direction == Direction.RIGHT:
+            next_x += BLOCK_SIZE
+        elif self.direction == Direction.LEFT:
+            next_x -= BLOCK_SIZE
+        elif self.direction == Direction.DOWN:
+            next_y += BLOCK_SIZE
+        elif self.direction == Direction.UP:
+            next_y -= BLOCK_SIZE
+
+        # limiti della mappa
+        # min confronta x con limite massimo, max confronta x con limite minimo
+        # in questo modo x, y compreso tra 0 e w-BLOCK_SIZE / h-BLOCK_SIZE; evita che il robot esce dallo schermo
+
+        next_x = max(0, min(self.w - BLOCK_SIZE, next_x))
+        next_y = max(0, min(self.h - BLOCK_SIZE, next_y))
+
+        new_position = point(next_x, next_y)
+
+        # solo se il passo è valido aggiorna la posizione
+        if not self.is_collision(new_position):
+            self.robot = new_position
+            return new_position, False # no collision
+        else:
+            return new_position, True # collision occurred
+    #
