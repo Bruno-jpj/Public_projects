@@ -49,6 +49,8 @@ class Simulation:
 
         self.trophie = None
 
+        self.status = None # free, unknown, obstacle
+
         self.obstacles = []
 
         self.place_trohpie()
@@ -94,13 +96,15 @@ class Simulation:
                 pg.quit()
                 quit()
         
-        old_position = self.robot # saved old position - temporary new_position of move()
+        old_position = self.robot # saved old position - which is temporary new_position of move() func
 
         self.move(action) # self.robot is updated => self.robot = new_position
 
+        temporary_pos = (self.robot, self.status)
+
         self.reward = 0
 
-        if self.robot not in self.robot_map.keys():
+        if temporary_pos not in self.robot_map.items():
             self.reward = 2
             self.frame_since_trophie -= 0.5
         elif old_position == self.robot:
@@ -205,9 +209,9 @@ class Simulation:
         if not self.is_collision(new_position):
             
             self.robot = new_position # temporary new_position
-
-            self.robot_map[(self.robot)] = FREE
-
+            self.robot_map[(self.robot)] = FREE # update position x,y with new stauts UNKNOWN -> FREE
+            self.status = FREE # var for tracking after change new status
         else:
             self.robot_map[(self.robot)] = OBSTACLE
+            self.status = OBSTACLE
     #
