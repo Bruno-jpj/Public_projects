@@ -103,7 +103,7 @@ class Simulation:
         self.reward = 0
 
         # temporary_pos server per controllare se la pos(x,y) e lo status per quella pos sono dentro la robot_map
-        if self.robot_map[self.robot] != UNKNOWN or self.robot_map[self.robot] != OBSTACLE:
+        if self.robot_map[self.robot] == UNKNOWN:
             self.reward = 2
             self.frame_since_trophie -= 0.5
         elif old_position == self.robot:
