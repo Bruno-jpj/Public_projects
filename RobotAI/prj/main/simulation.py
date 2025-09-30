@@ -98,25 +98,29 @@ class Simulation:
         
         old_position = self.robot # saved old position - which is temporary new_position of move() func
 
-        self.move(action) # self.robot is updated => self.robot = new_position
+        new_position = self.move(action) 
 
         self.reward = 0
-
-        # temporary_pos server per controllare se la pos(x,y) e lo status per quella pos sono dentro la robot_map
-        if self.robot_map[self.robot] == UNKNOWN:
-            self.reward = 2
-            self.frame_since_trophie -= 0.5
-        elif old_position == self.robot:
-            print(f"same last position: {old_position} - {self.robot}")
+       
 
         # max_movement_with_no_trophie => 10 * (640 / 20) + (480 / 20) = 10 * (32 + 24) = 560
         max_frames_no_trophie = 10 * ((self.w // BLOCK_SIZE) + (self.h // BLOCK_SIZE))
 
-        if self.is_collision():
+        if self.is_collision(new_position):
             self.reward = -10
             self.score -= 1
             self.frame_since_trophie += 1
-        elif self.frame_since_trophie > max_frames_no_trophie:
+            self.robot_map[self.robot] = OBSTACLE
+        else:
+            if self.robot_map[new_position] == UNKNOWN:
+                self.reward = +2
+                self.frame_since_trophie -= 0.5           
+
+            self.robot = new_position
+            self.robot_map[self.robot] = FREE
+                 
+        
+        if self.frame_since_trophie > max_frames_no_trophie:
             self.reward = -2
             self.score -= 0.5
         
@@ -204,13 +208,5 @@ class Simulation:
 
         new_position = point(next_x, next_y)
 
-        # solo se il passo è valido aggiorna la posizione
-        if not self.is_collision(new_position):
-            
-            self.robot = new_position # temporary new_position
-            self.robot_map[(self.robot)] = FREE # update position x,y with new stauts UNKNOWN -> FREE
-            self.status = FREE # var for tracking after change new status
-        else:
-            self.robot_map[(self.robot)] = OBSTACLE
-            self.status = OBSTACLE
+        return new_position
     #
