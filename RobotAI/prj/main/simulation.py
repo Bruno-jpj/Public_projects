@@ -2,6 +2,10 @@ import pygame as pg
 import random as r
 import numpy as np
 
+from CONST import UNKNOWN, FREE, OBSTACLE, BLOCK_SIZE, ROBOT, SPEED, BLACK, BLUE, WHITE, RED, GREEN
+
+import map_logic as ml
+
 # special type of tuple, can access element by position or name
 from collections import namedtuple
 from enum import Enum
@@ -18,43 +22,40 @@ class Direction(Enum):
 
 point = namedtuple('Point', 'x, y')
 
-# colors
-WHITE = (255, 255, 255) # text
-BLACK = (0, 0, 0) # background
-RED = (200, 0, 0) # obstacle
-GREEN = (0, 128, 0) # trophie
-BLUE = (0, 0, 255) # robot body
-
-# specs
-BLOCK_SIZE = 20
-SPEED = 40
-
 class Simulation:
-    def __init__(self, w = 640, h = 480, num_obs = 0):
+    def __init__(self, w = 640, h = 480):
         self.w = w
         self.h = h
 
-        num_obs = r.randint(1, 20)
-        self.num_obs = num_obs
+        # valori: ((x, y) :  status)
+        # creata la mappa dove per ogni cordinata (x, y) = UNKNOWN
+        self.robot_map = ml.create_map(self.w, self.h)
+
+        self.num_obs = r.randint(1, 20) 
+
+        self.tot_trophies = 0
 
         self.display = pg.display.set_mode((self.w, self.h))
 
         self.clock = pg.time.Clock()
         self.reset()
-    #
+    # serve solo quando si inizia una nuova simulazione
     def reset(self):
         self.direction = Direction.RIGHT
 
-        self.robot = point(self.w/2, self.h/2)
+        self.robot = point(self.w//2, self.h//2)
 
         self.score = 0
+
         self.trophie = None
+
         self.obstacles = []
 
         self.place_trohpie()
         self.place_obstacles()
 
         self.frame_iteration = 0 # action counter
+        self.frame_since_trophie = 0
     #
     def place_trohpie(self):
         # range x: (0, 620) y: (0, 460)
@@ -64,7 +65,7 @@ class Simulation:
         trophie = point(x, y)
 
         if trophie == self.robot or trophie in self.obstacles:
-            return self.place_obstacles()
+            return self.place_trohpie()
         
         self.trophie = trophie
     # 
@@ -80,12 +81,14 @@ class Simulation:
             pt = point(x, y)
 
             if pt != self.robot and pt != self.trophie:
+                
                 # insert obj in the obstacles list
                 self.obstacles.append(pt)
     #
     def step(self, action):
-        self.frame_iteration += 1
 
+        self.frame_iteration += 1
+        
         for e in pg.event.get():
             if e.type == pg.QUIT:
                 pg.quit()
@@ -94,19 +97,29 @@ class Simulation:
         self.move(action)
 
         reward = 0
-        # frame limit
-        max_frame = 100 * (self.w // BLOCK_SIZE) * (self.h // BLOCK_SIZE)
 
-        if self.is_collision() or self.frame_iteration > max_frame:
+        # max_movement_with_no_trophie => 10 * (640 / 20) + (480 / 20) = 10 * (32 + 24) = 560
+        max_frames_no_trophie = 10 * ((self.w // BLOCK_SIZE) + (self.h // BLOCK_SIZE))
+
+        if self.is_collision():
             reward = -10
-            return reward, self.score
+            self.score -= 1
+            self.frame_since_trophie += 1
+        elif self.frame_since_trophie > max_frames_no_trophie:
+            reward = -2
+            self.score -= 0.5
         
         if self.robot == self.trophie:
             self.score += 1
-            reward = +10
+            self.tot_trophies += 1
+            reward = +20
+
+            self.frame_since_trophie = 0
             self.place_trohpie()
-            # self.frame_iteration = 0
-        
+            self.frame_iteration = 0
+        else:
+            self.frame_since_trophie += 1
+
         self.update_ui()
         self.clock.tick(SPEED)
 
@@ -116,10 +129,10 @@ class Simulation:
         if pt is None:
             pt = self.robot
         
-        if pt.x > self.w - BLOCK_SIZE or pt.x < 0 or pt.y > self.h - BLOCK_SIZE or pt < 0:
+        if pt.x > self.w - BLOCK_SIZE or pt.x < 0 or pt.y > self.h - BLOCK_SIZE or pt.y < 0:
             return True
         
-        if pt == self.robot:
+        if pt in self.obstacles:
             return True
         
         return False
@@ -137,7 +150,7 @@ class Simulation:
             pg.draw.rect(self.display, RED, pg.Rect(obstacle.x , obstacle.y, BLOCK_SIZE, BLOCK_SIZE))
 
         # draw robot
-        pg.draw.rect(self.display, BLUE, pg.rect(self.robot.x, self.robot.y, BLOCK_SIZE, BLOCK_SIZE))
+        pg.draw.rect(self.display, BLUE, pg.Rect(self.robot.x, self.robot.y, BLOCK_SIZE, BLOCK_SIZE))
 
         text = font.render(f"Score: {self.score}", True, WHITE)
         self.display.blit(text, [0, 0])
@@ -154,23 +167,36 @@ class Simulation:
             new_dir = movement[next_index]
         elif np.array_equal(action, [0, 0, 1]):
             next_index = (index - 1) % 4
-            new_dir = movement(next_index)
+            new_dir = movement[next_index]
         else:
             new_dir = self.direction
         
         self.direction = new_dir
 
-        x = self.robot.x
-        y = self.robot.y
+        next_x = self.robot.x
+        next_y = self.robot.y
 
         if self.direction == Direction.RIGHT:
-            x += BLOCK_SIZE
+            next_x += BLOCK_SIZE
         elif self.direction == Direction.LEFT:
-            x -= BLOCK_SIZE
+            next_x -= BLOCK_SIZE
         elif self.direction == Direction.DOWN:
-            y += BLOCK_SIZE
+            next_y += BLOCK_SIZE
         elif self.direction == Direction.UP:
-            y -= BLOCK_SIZE
+            next_y -= BLOCK_SIZE
 
-        self.head = point(x, y)
+        # limiti della mappa
+        # min confronta x con limite massimo, max confronta x con limite minimo
+        # in questo modo x, y compreso tra 0 e w-BLOCK_SIZE / h-BLOCK_SIZE; evita che il robot esce dallo schermo
+
+        next_x = max(0, min(self.w - BLOCK_SIZE, next_x))
+        next_y = max(0, min(self.h - BLOCK_SIZE, next_y))
+
+
+        # solo se il passo è valido aggiorna la posizione
+        if not self.is_collision(point(next_x, next_y)):
+            self.robot = point(next_x, next_y)
+            self.robot_map[(next_x, next_y)] = FREE
+        else:
+            self.robot_map[(next_x, next_y)] = OBSTACLE
     #
