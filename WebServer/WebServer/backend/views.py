@@ -3,14 +3,14 @@ from .models import ( Site, User )
 from .forms import SiteCreateForm
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
-from django.http import Http404
+from django.http import Http404, HttpRequest
 from backend.signals import send_telegram_message as stm
 from django.views.generic import ListView #
 
 # Create your views here.
 
 # view per aggiunta del sito 
-def site_create_view(request):
+def site_create_view(request: HttpRequest):
     if 'user_id' not in request.session:
         return redirect('login_index_view')
     #
@@ -36,7 +36,7 @@ def site_create_view(request):
     return render(request, "site_create.html",{'form':form})
 #
 # view per la login 
-def login_index_view(request):
+def login_index_view(request: HttpRequest):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -66,7 +66,7 @@ def login_index_view(request):
     return render(request, "login.html")
 #
 # sistema di logout per eliminare la sessione quando l'utente esce.
-def log_out_view(request):
+def log_out_view(request: HttpRequest):
     try:
         # prova a rimuovere dalla sessione l'oggetto user_id
         del request.session['user_id']
@@ -98,7 +98,7 @@ def home_page_view(request):
     return render(request, 'home_page.html', {'user': user})
 #
 # view per gestione della pagina siti 
-def site_list_view(request):
+def site_list_view(request: HttpRequest):
     if 'user_id' not in request.session:
         return redirect('login_index_view')
     
@@ -142,7 +142,7 @@ def site_list_view(request):
     return render(request,'site_page.html', context)
 #
 # dynamic routing per i dettagli specifici del sito
-def dynamic_site_view(request, slug):
+def dynamic_site_view(request: HttpRequest, slug):
     if 'user_id' not in request.session:
         return redirect('login_index_view')
     #
