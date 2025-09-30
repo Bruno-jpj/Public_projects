@@ -100,11 +100,10 @@ class Simulation:
 
         self.move(action) # self.robot is updated => self.robot = new_position
 
-        temporary_pos = (self.robot, self.status)
-
         self.reward = 0
 
-        if temporary_pos not in self.robot_map.items():
+        # temporary_pos server per controllare se la pos(x,y) e lo status per quella pos sono dentro la robot_map
+        if self.robot_map[self.robot] != UNKNOWN or self.robot_map[self.robot] != OBSTACLE:
             self.reward = 2
             self.frame_since_trophie -= 0.5
         elif old_position == self.robot:
