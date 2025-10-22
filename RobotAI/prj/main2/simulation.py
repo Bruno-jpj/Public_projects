@@ -3,9 +3,9 @@ import random as r
 import numpy as np
 import os
 
-MAP_ROBOT_PATH = r'/home/userbruno/Scrivania/github/Public_projects/RobotAI/prj/main/map.txt'
+MAP_ROBOT_PATH = r'/home/userbruno/Scrivania/github/Public_projects/RobotAI/prj/main2/map.txt'
 
-from CONST import UNKNOWN, FREE, OBSTACLE, BLOCK_SIZE, ROBOT, SPEED, BLACK, BLUE, WHITE, RED, GREEN
+from const import UNKNOWN, FREE, OBSTACLE, BLOCK_SIZE, ROBOT, SPEED, BLACK, BLUE, WHITE, RED, GREEN
 
 import map_logic as ml
 
@@ -91,7 +91,8 @@ class Simulation:
                 self.obstacles.append(pt)
     #
     def step(self, action):
-
+        
+        # tot steps counter
         self.frame_iteration += 1
         
         for e in pg.event.get():
@@ -122,7 +123,7 @@ class Simulation:
 
             self.robot = new_position
             self.robot_map[self.robot] = FREE
-        
+
         if self.frame_since_trophie > max_frames_no_trophie:
             self.reward = -2
             self.score -= 0.5
@@ -136,6 +137,9 @@ class Simulation:
             self.frame_iteration = 0
         else:
             self.frame_since_trophie += 1
+
+        if self.frame_iteration % 100 == 0:
+            self.save_map(self.robot_map, self.robot)
 
         self.update_ui()
         self.clock.tick(SPEED)
@@ -212,4 +216,35 @@ class Simulation:
         new_position = point(next_x, next_y)
 
         return new_position
-            
+    #
+    def write_map_to_file(self, temp_robot, temp_status):
+
+        # set of the position
+        pos_set = set()
+
+        if temp_robot not in pos_set:
+            with open(MAP_ROBOT_PATH, 'a') as file:
+
+                temp_map = " ".join([str(temp_robot), str(temp_status)])
+
+                pos_set.add(temp_robot)
+
+                file.write(temp_map + '\n')
+        #
+    # 
+    def save_map(self, map, robot):
+        # map is {(x, y): status}
+        # robot is (x, y)
+        np.savez(MAP_ROBOT_PATH, map, robot)
+        print(f"map saved in {MAP_ROBOT_PATH}")
+    #
+    def load_map(self):
+        if os.path.exists(MAP_ROBOT_PATH):
+            data = np.load(MAP_ROBOT_PATH)
+            print(f"map loaded from {MAP_ROBOT_PATH}")
+
+            return data["map"], data["robot"]
+        else:
+            print("none map saved; new one will be created")
+
+            return None, None
