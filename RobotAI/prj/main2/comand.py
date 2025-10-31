@@ -38,7 +38,7 @@ from PySide6.QtCore import (
 import sys 
 
 SETCMD = {
-    0: 'move',
+    0: 'stop',
     1: 'start auto-exploration',
     2: 'move to ({x}, {y}) position'
 }
@@ -80,14 +80,14 @@ class CommandApp():
         layout = QVBoxLayout()
 
         # move CMD: move robot auto-exploration
-        moveLabel = QLabel("move Command")
-        moveBtn = QPushButton("move")
-        moveBtn.clicked.connect()
+        moveLabel = QLabel("Stop Command")
+        moveBtn = QPushButton("Stop")
+        moveBtn.clicked.connect(lambda: self.check_command(0))
 
         # Start CMD: start robot auto-exploration
         AutoExpLabel = QLabel("Start Auto-Exploration")
         AutoExpBtn = QPushButton("Start")
-        AutoExpBtn.clicked.connect()
+        AutoExpBtn.clicked.connect(lambda: self.check_command(1))
 
         # Move CMD: move to (x,y) chosen position
         Xlabel = QLabel("Insert X coordinate")
@@ -99,7 +99,7 @@ class CommandApp():
         MoveLabel = QLabel("Move to (X,Y) Position")
         MoveBtn = QPushButton("Move")
 
-        MoveBtn.clicked.connect()
+        MoveBtn.clicked.connect(lambda: self.check_command(2))
 
         # layout per coordinate
         coord_layout = QHBoxLayout()
@@ -121,7 +121,48 @@ class CommandApp():
         layout.addWidget(MoveBtn)
 
         self.window.setLayout(layout)
-    #        
+    #
+    def check_command(self, id):
+        try:
+            self.last_cmd_id = id
+            print(f"[GUI] Ultimo comando: [{SETCMD.get(id, 'Unknown')}]")
+        except Exception as e:
+            print(f"Error: Catch Exception in check_command: {e}")
+    #
+    def send_command(self):
+        if self.last_cmd_id is None:
+            return None, "None Command Inserted", None
+        #
+        cmd_id = self.last_cmd_id
+        # return Move, msg, point(x, y)
+        try:
+            if cmd_id == 0:
+                # STOP
+                msg = f"Command: {SETCMD[cmd_id]}"
+                return False, msg, False
+            elif cmd_id == 1:
+                # START-AUTO
+                msg = f"Command: {SETCMD[cmd_id]}"
+                return True, msg, None
+            elif cmd_id == 2:
+                # MOVE (X, Y)
+                x = self.Xinput.text()
+                y = self.Yinput.text()
+                
+                if x.isnumeric() and y.isnumeric():
+                    msg = SETCMD[cmd_id].format(x=x, y=y)
+                    point = (x, y)
+                    return True, msg, point
+                else:
+                    msg: "Invalid Coordinates"
+                    return None, msg, None
+            else:
+                msg = "Invalid Command ID"
+                return None, msg, None
+        except Exception as e:
+            msg = f"Error Sending Command: {e}"
+            print(msg)
+            return None, msg, None
 #
 '''
 def main():
@@ -130,44 +171,4 @@ def main():
 #
 if __name__ == "__main__":
     main()
-'''
-'''
-def move_cmd(self):
-        try:
-            # .text() retrives text from QLineEdit
-            if self.Xinput.text().isnumeric() and self.Yinput.text().isnumeric():
-                msg = f"Sent Command: {SETCMD[2].format(x=self.Yinput, y=self.Yinput)}"
-                return True, msg
-            else:
-                msg = "Invalid cooridnates."
-                return False, msg
-        except Exception as e:
-            print(f"Error in Move Command: {e}")
-    #
-    def print_status(self, cmd_id):
-        print(f"Sent command: {SETCMD[cmd_id]}")
-    #
-    def send_command(self, id):
-        self.print_status(id)
-        move = False
-        try:    
-            if id == 0:
-                move = True
-                return move
-            elif id == 1:
-                move = False
-                return move
-            elif id == 2:
-                valid, msg = self.move_cmd()
-                if valid:
-                    move = valid
-                    return move, msg
-                else:
-                    move = valid
-                    return move, msg
-            else:
-                msg = f"Invalid command ID."
-                return None, msg
-        except Exception as e:
-            print(f"Error sending command: {e}")
 '''
