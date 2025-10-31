@@ -17,3 +17,6 @@ ROBOT = 3
 
 # path
 SAVED_MAP_PATH = r'prj/main2/map/saved_map.npz'
+
+# app name
+APP_NAME = "Command GUI"

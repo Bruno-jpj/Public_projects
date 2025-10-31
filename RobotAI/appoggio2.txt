@@ -1,25 +1,37 @@
 import torch
 import random
-import numpy as np
+import numpy as np 
+
+import matplotlib
+matplotlib.use("Qt5Agg")  # oppure "Qt5Agg" se hai PyQt5 installato
+import matplotlib.pyplot as plt
+
 from collections import deque
+from queue import Queue
+
 from simulation import Simulation, Direction, point
 from model import Linear_QNet, QTrainer
+
+import map_logic as ml
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
 LR = 0.002
 
+QUEUE = Queue()
+
 class Agent:
     def __init__(self):
         self.n_games = 0
-        self.epsilon = 80  # esplorazione iniziale
-        self.gamma = 0.9
+        self.epsilon = 80  # fattore esplorazione
+        self.gamma = 0.9  # fattore sconto
         self.memory = deque(maxlen=MAX_MEMORY)
         self.model = Linear_QNet(11, 512, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
     def get_state(self, game):
         head = game.robot
+
         point_l = point(head.x - 20, head.y)
         point_r = point(head.x + 20, head.y)
         point_u = point(head.x, head.y - 20)
@@ -31,26 +43,35 @@ class Agent:
         dir_d = game.direction == Direction.DOWN
 
         state = [
+            # pericolo davanti
             (dir_r and game.is_collision(point_r)) or 
             (dir_l and game.is_collision(point_l)) or 
             (dir_u and game.is_collision(point_u)) or 
             (dir_d and game.is_collision(point_d)),
 
+            # pericolo a destra
             (dir_u and game.is_collision(point_r)) or 
             (dir_d and game.is_collision(point_l)) or 
             (dir_l and game.is_collision(point_u)) or 
             (dir_r and game.is_collision(point_d)),
 
+            # pericolo a sinistra
             (dir_d and game.is_collision(point_r)) or 
             (dir_u and game.is_collision(point_l)) or 
             (dir_r and game.is_collision(point_u)) or 
             (dir_l and game.is_collision(point_d)),
 
-            dir_l, dir_r, dir_u, dir_d,
+            # direzione attuale
+            dir_l,
+            dir_r,
+            dir_u,
+            dir_d,
+
+            # posizione trofeo
             game.trophie.x < game.robot.x, 
             game.trophie.x > game.robot.x, 
             game.trophie.y < game.robot.y, 
-            game.trophie.y > game.robot.y
+            game.trophie.y > game.robot.y  
         ]
 
         return np.array(state, dtype=int)
@@ -63,15 +84,17 @@ class Agent:
             mini_sample = random.sample(self.memory, BATCH_SIZE)
         else:
             mini_sample = self.memory
+        
         states, actions, rewards, next_states = zip(*mini_sample)
+
         self.trainer.train_step(states, actions, rewards, next_states)
 
     def train_short_memory(self, state, action, reward, next_state):
         self.trainer.train_step(state, action, reward, next_state)
 
     def get_action(self, state):
-        # decresce lentamente epsilon, ma mai zero (continua esplorazione)
-        self.epsilon = max(10, 80 - self.n_games // 2)
+
+        self.epsilon = max(5, 80 - self.n_games // 2)  # esplorazione decrescente
         final_move = [0, 0, 0]
         if random.randint(0, 200) < self.epsilon:
             move = random.randint(0, 2)
@@ -86,20 +109,48 @@ class Agent:
 def train():
     agent = Agent()
     game = Simulation()
+
     record = 0
     total_reward = 0
 
+    plt.ion()
+    fig, ax = plt.subplots()
+    plt.show(block = False)
+
     while True:
+
+        _map, pos = game.load_map()
+        if _map is None:
+            _map = ml.create_map(game.w, game.h)
+            pos = game.robot
+
+
+        # stato attuale
         state_old = agent.get_state(game)
+
+        # azione
         final_move = agent.get_action(state_old)
+
+        # esegui azione
         reward, score = game.step(final_move)
+
+        # aggiorna la mappa (stesso grafico)
+        ml.draw_map(game.robot_map, ax, game.w, game.h)
+        plt.pause(0.1)
+
+        # nuovo stato
         state_new = agent.get_state(game)
 
-        # allenamento breve
+        # allenamento memoria breve
         agent.train_short_memory(state_old, final_move, reward, state_new)
+
+        # salva esperienza
         agent.remember(state_old, final_move, reward, state_new)
+
+        # allenamento memoria lunga periodico
         agent.train_long_memory()
 
+        # aggiorna record se serve
         if score > record:
             record = score
             agent.model.save()
@@ -107,332 +158,10 @@ def train():
         total_reward += reward
         agent.n_games += 1
 
-        print(f"Game: {agent.n_games}, Score: {score}, Record: {record}, Reward: {reward}, Total Reward: {total_reward}")
+        # stampa log
+        print(f"Movement: {agent.n_games}, Score: {score}, Tot Trophies: {game.tot_trophies}, Reward: {reward}, Total Reward: {total_reward}, Loss: {agent.trainer.train_step(state_old, final_move, reward, state_new)}")
+#
 
 if __name__ == "__main__":
     train()
-
-/********************************************************************/
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
-import os
-import numpy as np
-
-class Linear_QNet(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
-        super().__init__()
-        self.linear1 = nn.Linear(input_size, hidden_size)
-        self.linear2 = nn.Linear(hidden_size, output_size)
-
-    def forward(self, x):
-        x = F.relu(self.linear1(x))
-        x = self.linear2(x)
-        return x
-
-    def save(self, file_name='model.pth'):
-        model_path = './model'
-        if not os.path.exists(model_path):
-            os.makedirs(model_path)
-        file_name = os.path.join(model_path, file_name)
-        torch.save(self.state_dict(), file_name)
-
-
-class QTrainer:
-    def __init__(self, model, lr, gamma):
-        self.lr = lr
-        self.gamma = gamma
-        self.model = model
-        self.optimizer = optim.Adam(model.parameters(), lr=self.lr)
-        self.criterion = nn.MSELoss()
-
-    def train_step(self, state, action, reward, next_state):
-        state = torch.tensor(np.array(state), dtype=torch.float)
-        next_state = torch.tensor(np.array(next_state), dtype=torch.float)
-        action = torch.tensor(np.array(action), dtype=torch.long)
-        reward = torch.tensor(np.array(reward), dtype=torch.float)
-
-        if len(state.shape) == 1:
-            state = torch.unsqueeze(state, 0)
-            next_state = torch.unsqueeze(next_state, 0)
-            action = torch.unsqueeze(action, 0)
-            reward = torch.unsqueeze(reward, 0)
-
-        pred = self.model(state)
-        target = pred.clone().detach()  # staccato dal grafo
-
-        for idx in range(len(state)):
-            Q_new = reward[idx] + self.gamma * torch.max(self.model(next_state[idx]).detach())
-            target[idx][torch.argmax(action[idx]).item()] = Q_new
-
-        self.optimizer.zero_grad()
-        loss = self.criterion(target, pred)
-        loss.backward()
-        self.optimizer.step()
-        return loss.item()
-
-/**********************************************************************************************************************************************/
-import pygame as pg
-import random as r
-import numpy as np
-from collections import namedtuple
-from enum import Enum
-
-pg.init()
-font = pg.font.Font(None, 25)
-
-class Direction(Enum):
-    RIGHT = 0
-    DOWN = 1
-    LEFT = 2
-    UP = 3
-
-point = namedtuple('Point', 'x, y')
-
-# colori
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (200, 0, 0)
-GREEN = (0, 128, 0)
-BLUE = (0, 0, 255)
-
-# specifiche
-BLOCK_SIZE = 20
-SPEED = 40
-
-class Simulation:
-    def __init__(self, w=640, h=480, num_obs=0):
-        self.w = w
-        self.h = h
-        self.num_obs = r.randint(1, 20)
-        self.display = pg.display.set_mode((self.w, self.h))
-        self.clock = pg.time.Clock()
-        self.reset()
-
-    def reset(self):
-        self.direction = Direction.RIGHT
-        self.robot = point(self.w // 2, self.h // 2)
-        self.score = 0
-        self.trophie = None
-        self.obstacles = []
-        self.place_trohpie()
-        self.place_obstacles()
-        self.frame_iteration = 0
-        self.frames_since_reward = 0
-
-    def place_trohpie(self):
-        while True:
-            x = r.randint(0, (self.w - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
-            y = r.randint(0, (self.h - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
-            trophie = point(x, y)
-            if trophie != self.robot and trophie not in self.obstacles:
-                self.trophie = trophie
-                break
-
-    def place_obstacles(self):
-        self.obstacles.clear()
-        for _ in range(self.num_obs):
-            while True:
-                x = r.randint(0, (self.w - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
-                y = r.randint(0, (self.h - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
-                pt = point(x, y)
-                if pt != self.robot and pt != self.trophie and pt not in self.obstacles:
-                    self.obstacles.append(pt)
-                    break
-
-    def step(self, action):
-        self.frame_iteration += 1
-
-        for e in pg.event.get():
-            if e.type == pg.QUIT:
-                pg.quit()
-                quit()
-
-        old_pos = self.robot
-        old_distance = abs(self.robot.x - self.trophie.x) + abs(self.robot.y - self.trophie.y)
-
-        self.move(action)
-
-        reward = 0
-        new_distance = abs(self.robot.x - self.trophie.x) + abs(self.robot.y - self.trophie.y)
-
-        # collisione → resta fermo e penalità
-        if self.is_collision(self.robot):
-            reward = -5
-            self.robot = old_pos
-            self.frames_since_reward += 1
-        else:
-            # ricompensa per avvicinarsi al trofeo
-            if new_distance < old_distance:
-                reward = 1
-                self.frames_since_reward = 0
-            else:
-                reward = -0.1
-                self.frames_since_reward += 1
-
-        # trofeo raccolto
-        if self.robot == self.trophie:
-            self.score += 1
-            reward = 10
-            self.place_trohpie()
-            self.frames_since_reward = 0
-
-        # penalità se troppo tempo senza reward
-        max_frames_without_reward = 10 * ((self.w // BLOCK_SIZE) + (self.h // BLOCK_SIZE))
-        if self.frames_since_reward > max_frames_without_reward:
-            reward -= 5
-            self.frames_since_reward = 0
-
-        self.update_ui()
-        self.clock.tick(SPEED)
-
-        return reward, self.score
-
-    def is_collision(self, pt=None):
-        if pt is None:
-            pt = self.robot
-        if pt.x >= self.w or pt.x < 0 or pt.y >= self.h or pt.y < 0:
-            return True
-        if pt in self.obstacles:
-            return True
-        return False
-
-    def update_ui(self):
-        self.display.fill(BLACK)
-        # trofeo
-        pg.draw.rect(self.display, GREEN, pg.Rect(self.trophie.x, self.trophie.y, BLOCK_SIZE, BLOCK_SIZE))
-        # ostacoli
-        for obstacle in self.obstacles:
-            pg.draw.rect(self.display, RED, pg.Rect(obstacle.x, obstacle.y, BLOCK_SIZE, BLOCK_SIZE))
-        # robot
-        pg.draw.rect(self.display, BLUE, pg.Rect(self.robot.x, self.robot.y, BLOCK_SIZE, BLOCK_SIZE))
-        # score
-        text = font.render(f"Score: {self.score}", True, WHITE)
-        self.display.blit(text, [0, 0])
-        pg.display.flip()
-
-    def move(self, action):
-        movement = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
-        index = movement.index(self.direction)
-
-        if np.array_equal(action, [1, 0, 0]):
-            new_dir = movement[index]  # dritto
-        elif np.array_equal(action, [0, 1, 0]):
-            next_index = (index + 1) % 4
-            new_dir = movement[next_index]  # a destra
-        elif np.array_equal(action, [0, 0, 1]):
-            next_index = (index - 1) % 4
-            new_dir = movement[next_index]  # a sinistra
-        else:
-            new_dir = self.direction
-
-        self.direction = new_dir
-
-        x = self.robot.x
-        y = self.robot.y
-
-        if self.direction == Direction.RIGHT:
-            x += BLOCK_SIZE
-        elif self.direction == Direction.LEFT:
-            x -= BLOCK_SIZE
-        elif self.direction == Direction.DOWN:
-            y += BLOCK_SIZE
-        elif self.direction == Direction.UP:
-            y -= BLOCK_SIZE
-
-        self.robot = point(x, y)
-/***************************************************/
-def step(self, action):
-
-        self.frame_iteration += 1
-        
-        for e in pg.event.get():
-            if e.type == pg.QUIT:
-                pg.quit()
-                quit()
-        #
-
-        self.reward = 0
-
-        self.old_position = self.robot
-
-        new_position, collision = self.move(action) # self.robot is updated => self.new_position = self.robot
-
-        if new_position not in self.robot_map.keys() and not collision:
-            self.reward = 2
-            self.frame_since_trophie -= 0.5
-        if collision:
-            self.robot_map[new_position] = OBSTACLE
-        else:
-            self.robot_map[new_position] = FREE
-        # max_movement_with_no_trophie => 10 * (640 / 20) + (480 / 20) = 10 * (32 + 24) = 560
-        max_frames_no_trophie = 10 * ((self.w // BLOCK_SIZE) + (self.h // BLOCK_SIZE))
-
-        if self.is_collision():
-            self.reward = -10
-            self.score -= 1
-            self.frame_since_trophie += 1
-        elif self.frame_since_trophie > max_frames_no_trophie:
-            self.reward = -2
-            self.score -= 0.5
-        
-        if self.robot == self.trophie:
-            self.score += 1
-            self.tot_trophies += 1
-            self.reward = +20
-            self.frame_since_trophie = 0
-            self.place_trohpie()
-            self.frame_iteration = 0
-        else:
-            self.frame_since_trophie += 1
-
-        self.update_ui()
-        self.clock.tick(SPEED)
-
-        return self.reward, self.score
-def move(self, action):
-        movement = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
-        index = movement.index(self.direction)
-
-        if np.array_equal(action, [1, 0, 0]):
-            new_dir = movement[index] # straight
-        elif np.array_equal(action, [0, 1, 0]):
-            next_index = (index + 1) % 4
-            new_dir = movement[next_index]
-        elif np.array_equal(action, [0, 0, 1]):
-            next_index = (index - 1) % 4
-            new_dir = movement[next_index]
-        else:
-            new_dir = self.direction
-        
-        self.direction = new_dir
-
-        next_x = self.robot.x
-        next_y = self.robot.y
-
-        if self.direction == Direction.RIGHT:
-            next_x += BLOCK_SIZE
-        elif self.direction == Direction.LEFT:
-            next_x -= BLOCK_SIZE
-        elif self.direction == Direction.DOWN:
-            next_y += BLOCK_SIZE
-        elif self.direction == Direction.UP:
-            next_y -= BLOCK_SIZE
-
-        # limiti della mappa
-        # min confronta x con limite massimo, max confronta x con limite minimo
-        # in questo modo x, y compreso tra 0 e w-BLOCK_SIZE / h-BLOCK_SIZE; evita che il robot esce dallo schermo
-
-        next_x = max(0, min(self.w - BLOCK_SIZE, next_x))
-        next_y = max(0, min(self.h - BLOCK_SIZE, next_y))
-
-        new_position = point(next_x, next_y)
-
-        # solo se il passo è valido aggiorna la posizione
-        if not self.is_collision(new_position):
-            self.robot = new_position
-            return new_position, False # no collision
-        else:
-            return new_position, True # collision occurred
-    #
+#
