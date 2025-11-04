@@ -154,7 +154,7 @@ class CommandApp():
                     point = (x, y)
                     return True, msg, point
                 else:
-                    msg: "Invalid Coordinates"
+                    msg = "Invalid Coordinates"
                     return None, msg, None
             else:
                 msg = "Invalid Command ID"

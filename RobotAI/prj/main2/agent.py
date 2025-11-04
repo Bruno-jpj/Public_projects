@@ -115,7 +115,7 @@ def train():
 
     # start GUI
     cmd_app.mainloop()
-
+    
 #
 if __name__ == "__main__":
     train()
