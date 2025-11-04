@@ -14,6 +14,8 @@ from model import Linear_QNet, QTrainer
 
 import map_logic as ml
 
+from PySide6.QtCore import QThread, Signal
+
 import comand as cmd
 
 MAX_MEMORY = 100_000
@@ -107,6 +109,74 @@ class Agent:
             move = torch.argmax(prediction).item()
             final_move[move] = 1
         return final_move
+#
+
+class TrainingThread(QThread):
+    update_signal = Signal(str)
+
+    def __init__(self, agent, game, cmd_app):
+        super().__init__()
+        self.agent = agent
+        self.game = game
+        self.cmd_app = cmd_app
+        self.running = True
+
+    def run(self):
+        record = 0
+        total_reward = 0
+        plt.ion()
+        fig, ax = plt.subplots()
+        plt.show(block=False)
+
+        move, msg, point = self.cmd_app.send_command()
+
+        try:
+            while self.running:
+                move, msg, point = self.cmd_app.send_command()
+
+                if not move and point is None:
+                    self.update_signal.emit("Training stopped.")
+                    break
+
+                _map, pos = self.game.load_map()
+                if _map is None:
+                    _map = ml.create_map(self.game.w, self.game.h)
+                    pos = self.game.robot
+
+                # Stato attuale
+                state_old = self.agent.get_state(self.game)
+
+                # Azione
+                final_move = self.agent.get_action(state_old)
+
+                # Step
+                reward, score = self.game.step(final_move)
+
+                # Visualizza mappa
+                ml.draw_map(self.game.robot_map, ax, self.game.w, self.game.h)
+                plt.pause(0.1)
+
+                # Nuovo stato
+                state_new = self.agent.get_state(self.game)
+
+                # Allenamento breve e lungo
+                self.agent.train_short_memory(state_old, final_move, reward, state_new)
+                self.agent.remember(state_old, final_move, reward, state_new)
+                self.agent.train_long_memory()
+
+                if score > record:
+                    record = score
+                    self.agent.model.save()
+
+                total_reward += reward
+                self.agent.n_games += 1
+
+                log_msg = f"Movement: {self.agent.n_games}, Score: {score}, Reward: {reward}, Total Reward: {total_reward}"
+                print(log_msg)
+                self.update_signal.emit(log_msg)
+
+        except Exception as e:
+            self.update_signal.emit(f"Error: {e}")
 
 def train():
     agent = Agent()
