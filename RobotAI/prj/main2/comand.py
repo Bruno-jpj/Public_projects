@@ -171,4 +171,21 @@ def main():
 #
 if __name__ == "__main__":
     main()
+
+def check_command(self, id):
+    try:
+        self.last_cmd_id = id
+        print(f"[GUI] Ultimo comando: [{SETCMD.get(id, 'Unknown')}]")
+
+        if id == 1:  # start auto-exploration
+            from agent import Agent, Simulation, TrainingThread
+            self.agent = Agent()
+            self.game = Simulation()
+            self.training_thread = TrainingThread(self.agent, self.game, self)
+            self.training_thread.update_signal.connect(self.show_log)
+            self.training_thread.start()
+
+    except Exception as e:
+        print(f"Error: Catch Exception in check_command: {e}")
+
 '''
