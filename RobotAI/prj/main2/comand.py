@@ -101,6 +101,12 @@ class CommandApp():
 
         MoveBtn.clicked.connect(lambda: self.check_command(2))
 
+'''
+StopTrainBtn = QPushButton("Stop Training")
+StopTrainBtn.clicked.connect(self.stop_training)
+layout.addWidget(StopTrainBtn)
+'''
+
         # layout per coordinate
         coord_layout = QHBoxLayout()
         coord_layout.addWidget(QLabel("X:"))
@@ -121,6 +127,7 @@ class CommandApp():
         layout.addWidget(MoveBtn)
 
         self.window.setLayout(layout)
+
     #
     def check_command(self, id):
         try:
@@ -187,5 +194,10 @@ def check_command(self, id):
 
     except Exception as e:
         print(f"Error: Catch Exception in check_command: {e}")
+def stop_training(self):
+    if hasattr(self, 'training_thread') and self.training_thread.isRunning():
+        self.training_thread.running = False
+        self.training_thread.wait()
+        print("[GUI] Training stopped by user.")
 
 '''
