@@ -1,0 +1,18 @@
+# creates a branch with no previous commits (fresh new repo temp)
+git checkout --orphan clean-main
+
+# This removes all files from Git’s staging area (index) without deleting them from disk.
+git rm -r --cached .
+
+# add the files and stage the files you want tracked
+git add .
+git commit -m "commit"
+
+# replace main with clean-main
+git branch -D main       # Delete old main locally
+git branch -m main       # Rename clean-main to main
+git push origin main --force # --force is needed because you are rewriting history.
+
+# sanity check
+git status
+git ls-files | grep venv
