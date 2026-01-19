@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Hotel Il Castagno</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Hotel Ristorante Il Castagno</h1>
+            <nav>
+                <form action="{% url 'login' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="redirect" value="login">LOGIN</button>
+                </form>
+                <form action="{% url 'signup' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="redirect" value="signup">SIGN UP</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Sezione 1: Chi siamo -->
+        <div class="section-box about">
+            <div class="text-overlay">
+                <h2>Benvenuti all’Hotel Ristorante il Castagno</h2>
+                <p>
+                    Benvenuti all'Hotel Ristorante Il Castagno, un’oasi di tranquillità nel cuore delle 
+                    Marche, incastonata nel pittoresco borgo di Orciano di Pesaro, nel comune di Terre 
+                    Roveresche, in provincia di Pesaro Urbino. La nostra struttura a gestione familiare è 
+                    aperta tutto l'anno e offre una vacanza all'insegna del relax e della migliore tradizione 
+                    culinaria dell'entroterra fanese. 
+                    Se cercate un ristorante tipico a Orciano di Pesaro con una storia gastronomica 
+                    appassionante, un hotel accogliente e familiare nelle Marche dove sentirsi a casa, o 
+                    semplicemente un luogo che unisce tradizione e buona cucina, l'Hotel Ristorante Il 
+                    Castagno è la scelta ideale. Venite a scoprire la nostra storia e i sapori autentici del 
+                    nostro territorio. 
+                </p>
+            </div>
+            <form action="{% url 'aboutus' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="redirect" value="aboutus">SCOPRI DI PIÙ</button>
+            </form>
+        </div>
+
+        <!-- Sezione 2: Hotel -->
+        <div class="section-box hotel">
+            <div class="text-overlay">
+                <h2>Dormire all’Hotel il Castagno</h2>
+                <p>
+                    L'Hotel Ristorante Il Castagno offre 10 camere accoglienti di diverse tipologie, ideali 
+                    per ogni esigenza di soggiorno a Terre Roveresche. Godetevi comfort moderni come 
+                    aria condizionata, TV e connessione Wi-fi gratuita. Per le famiglie, è disponibile un 
+                    ampio parco giochi per bambini.
+                </p>
+            </div>
+            <form action="{% url 'hotel' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="redirect" value="hotel">SCOPRI DI PIÙ</button>
+            </form>
+        </div>
+
+        <!-- Sezione 3: Ristorante -->
+        <div class="section-box restaurant">
+            <div class="text-overlay">
+                <h2>Ristorante tipico marchigiano e Pizzeria</h2>
+                <p>
+                    Il nostro ristorante a Terre Roveresche offre un'ampia scelta di piatti tipici della cucina 
+                    marchigiana, con deliziosi menù di carne e pesce preparati con ingredienti freschi e di 
+                    stagione e pasta rigorosamente fatta a mano. Lasciatevi conquistare dai sapori 
+                    autentici del territorio in un ambiente familiare. La nostra pizzeria propone una vasta 
+                    gamma di pizze cotte nel forno a legna o a gas, farcite con ingredienti di alta qualità. 
+                    Scopri il nostro menù giornaliero con proposte sempre fresche. E per non rinunciare al 
+                    gusto, il nostro ristorante con asporto ti permette di portare a casa i tuoi piatti preferiti.
+                </p>
+            </div>
+            <form action="{% url 'restaurant' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="redirect" value="resturant">SCOPRI DI PIÙ</button>
+            </form>
+        </div>
+
+        <!-- Sezione 4: Bar / Gelateria -->
+        <div class="section-box gelateria">
+            <div class="text-overlay">
+                <h2>Bar e Gelateria Artigianale</h2>
+                <p>
+                    Oltre alle deliziose proposte del nostro ristorante e pizzeria, l'Hotel Ristorante Il 
+                    Castagno a Orciano di Pesaro vi accoglie nel suo bar e nella sua gelateria artigianale. 
+                    La nostra passione per i sapori autentici si traduce in un gelato cremoso e gustoso, 
+                    preparato con cura utilizzando solo materie prime selezionate di alta qualità e 
+                    freschissime, senza conservanti né coloranti, perfetto per concludere il pasto o per una 
+                    pausa rinfrescante.
+                </p>
+            </div>
+        </div>
+
+        <!-- Sezione 5: Eventi -->
+        <div class="section-box eventi">
+            <div class="text-overlay">
+                <h2>Location perfetta per cerimonie ed eventi</h2>
+                <p>
+                    Se stai cercando una location spaziosa e versatile per organizzare cerimonie, eventi 
+                    speciali o convention a Orciano di Pesaro, il nostro spazio potrebbe essere la scelta 
+                    giusta. Offriamo un ambiente accogliente e familiare, con un’ampia gamma di servizi 
+                    personalizzabili tra cui poter scegliere.
+                </p>
+            </div>
+            <form action="{% url 'events' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="redirect" value="events">SCOPRI DI PIÙ</button>
+            </form>
+        </div>
+
+        <!-- Messaggi -->
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Hotel Ristorante Il Castagno</p>
+            <p>Orciano di Pesaro (PU) | info@ilcastagno.it | Tel. 0721 123456</p>
+        </div>
+    </footer>
+    <script>
+        // Funzione per attivare le animazioni al scroll
+        function revealSections() {
+            const sections = document.querySelectorAll('.section-box');
+            const triggerBottom = window.innerHeight * 0.9;
+
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                if (sectionTop < triggerBottom) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+        // Avvia animazioni al caricamento e allo scroll
+        window.addEventListener('scroll', revealSections);
+        window.addEventListener('load', revealSections);
+    </script>
+</body>
+</html>

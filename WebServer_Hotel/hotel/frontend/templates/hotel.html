@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel</title>
+    <link rel="stylesheet" href="{% static 'css/hotel.css' %}">
+</head>
+<body>
+    <header>
+        <div>
+            <h1> Hotel Il Castagno: Ospitalità a Orciano di Pesaro </h1>
+        </div>
+    </header>
+    <main>
+        <div>
+            <div>
+                <p>
+                    Immerso nelle dolci colline dell'entroterra fanese, tra le valli del Metauro e del 
+                    Cesano, sorge Orciano di Pesaro, un borgo storico a breve distanza da Fano, Pesaro e 
+                    Urbino. Qui, l'Hotel Ristorante Il Castagno offre un'esperienza di soggiorno autentica, 
+                    all'insegna dell'ospitalità familiare e del relax.
+                </p>
+            </div>
+            <div>
+                <p>
+                    Hotel: 
+                    Le nostre 10 camere singole e doppie con bagno sono arredate in modo semplice ma 
+                    accogliente e dotate di tutti i comfort moderni. I nostri servizi: 
+                    - Connessione Wi-Fi gratuita 
+                    - TV satellitare 
+                    - Aria condizionata 
+                    - Ampio spazio verde e parco giochi per bambini 
+                    Possibilità di culla per bambini  
+                    Ampio parcheggio gratuito non custodito di fronte alla struttura
+                </p>
+            </div>
+            <div>
+                <p>
+                    Ideali per famiglie e viaggiatori in cerca di tranquillità nelle Marche ma anche per 
+                    lavoratori dell’entroterra in cerca di un confortevole e comodo appoggio per la notte. 
+                    Potete scegliere la formula più adatta: solo colazione, mezza o pensione completa. Gli 
+                    amici a 4 zampe sono ammessi gratuitamente. Il nostro personale parla fluentemente 
+                    inglese, francese e tedesco. 
+                </p>
+            </div>
+            <div>
+                <p>
+                    L’Hotel Ristorante Il Castagno è la base ideale per esplorare un territorio dalle mille 
+                    sfaccettature e ricco di eventi della tradizione. Dagli amanti del mare, con le vicine 
+                    spiagge di Fano a soli 15 Km, a chi preferisce la montagna e le attività outdoor nella 
+                    suggestiva Gola del Furlo, passando per gli appassionati di enogastronomia desiderosi 
+                    di degustare vini e prodotti tipici locali nelle numerose cantine della zona. Gli amanti 
+                    della cultura e dell'artigianato potranno scoprire borghi storici come Mondavio e 
+                    Corinaldo (bandiere arancioni), le città d’arte come Urbino, o prendere parte a eventi 
+                    della tradizione come pali e sagre. Leggermente più lontane ma comunque a breve 
+                    distanza in auto troviamo le spettacolari Grotte di Frasassi e le famose spiagge di 
+                    Sirolo e di Numana.
+                </p>
+            </div>
+        </div>
+        <div>
+            <form action="{% url 'hotel_res' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="redirect" value="prenotazione_hotel">Prenota una camera/contattaci</button>
+            </form>
+        </div>
+        <!-- Messaggi -->
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </main>
+    <footer></footer>
+</body>
+</html>

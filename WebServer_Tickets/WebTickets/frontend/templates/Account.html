@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il tuo Account</title>
+    <link rel="stylesheet" href="{% static 'css/account.css' %}">
+</head>
+<body>
+    <head class="header">
+        <div class="divbar">
+            <nav class="navbar">
+                <a href="{% url 'home' %}">Home</a>
+                <form method="POST" action="{% url '' %}">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            </nav>
+        </div>
+    </head>
+    <main class="main">
+        <div class="container">
+            <h1>Dettagli Account</h1>
+            <div class="account-info">
+                <p><strong>Nome:</strong> {{ user.nome }}</p>
+                <p><strong>Cognome:</strong> {{ user.cognome }}</p>
+                <p><strong>Codice Fiscale:</strong> {{ user.codicefiscale }}</p>
+                <p><strong>Email:</strong>{{ user.email }}</p>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+            </div>
+            <h2>Biglietti Acquistati</h2>
+            <div class="tickets">
+                {% if biglietti %}
+                    <ul>
+                        {% for biglietto in biglietti %}
+                            <li>
+                                <strong>Da:</strong> {{ biglietto.stazione_partenza }} &rarr; 
+                                <strong>A:</strong> {{ biglietto.stazione_arrivo }} <br>
+                                <strong>Data:</strong> {{ biglietto.data }} <br>
+                                <strong>Prezzo:</strong> €{{ biglietto.prezzo }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Non hai ancora acquistato biglietti.</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <p>&copy; 2025 WebTickets. Tutti i diritti riservati.</p>
+    </footer>
+</body>
+</html>

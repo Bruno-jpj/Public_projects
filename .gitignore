@@ -1,0 +1,13 @@
+.venv/
+venv/
+env/
+.vs
+db.sqlite3
+.idea/
+.vscode/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+staticfiles/

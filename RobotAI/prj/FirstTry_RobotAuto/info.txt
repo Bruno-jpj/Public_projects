@@ -1,0 +1,2 @@
+    # map = {position: status}
+    # postion = (x,y,z) | status = 1 (free), 0 (unknwn), -1 (occupied)

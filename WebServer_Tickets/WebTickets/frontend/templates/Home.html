@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+    <body>
+        <section>
+            <header class="header">
+                <nav class="navbar">
+                    <div class="logo">WebTickets</div>
+                    <div class="nav-links">
+                        <a href="{% url  'account' %}">Account</a>
+                        <a href="{% url  '' %}">News&Info</a>
+                        <a href="{% url  '' %}">NewsOneStation</a>
+                    </div>
+                </nav>
+            </header>
+
+            <main class="main">
+                <div class="content">
+                    <!-- Immagine del treno a sinistra -->
+                    <img src="{% static 'img/train.jpg' %}" alt="train" class="train-image">
+
+                    <div class="container">
+                        <h1>Acquisto Biglietti e Abbonamenti</h1>
+
+                        <!-- Barra di Selezione -->
+                        <div class="selection-bar">
+                            <button type="button" onclick="showTicketForm()">Acquista Biglietto</button>
+                            <button type="button" onclick="showSubscriptionForm()">Acquista Abbonamento</button>
+                        </div>
+
+                        <!-- Form di acquisto Biglietto -->
+                        <div id="ticket-form" class="ticket-form">
+                            <h2>Acquista Biglietto</h2>
+                            <form action="buyticket" method="POST">
+                                {% csrf_token %}
+                                <label for="stazione_partenza">Stazione di Partenza:</label>
+                                <select id="stazione_partenza" name="stazione_partenza" required>
+                                    {% if stazioni %}
+                                        {% for stazione in stazioni %}
+                                            <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option disabled>Nessuna stazione disponibile</option>
+                                    {% endif %}
+                                </select>
+
+                                <label for="stazione_arrivo">Stazione di Arrivo:</label>
+                                <select id="stazione_arrivo" name="stazione_arrivo" required>
+                                    {% if stazioni %}
+                                        {% for stazione in stazioni %}
+                                            <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option disabled>Nessuna stazione disponibile</option>
+                                    {% endif %}
+                                </select>
+
+                                <label for="data">Data di Viaggio:</label>
+                                <input type="date" id="data" name="data" required>
+
+                                <label for="numero_passeggeri">Numero Passeggeri:</label>
+                                <input type="number" id="numero_passeggeri" name="numero_passeggeri" min="1" value="1" required>
+
+                                <label for="classe">Classe:</label>
+                                <select id="classe" name="classe" required>
+                                    <option value="prima">Prima Classe</option>
+                                    <option value="seconda">Seconda Classe</option>
+                                </select>
+
+                                <button value="ticket" name="ticket" type="submit">Acquista Biglietto</button>
+                            </form>
+                            {% if messages %}
+                                {% for message in messages%}
+                                    <p style="color: red;">{{ message }}</p>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <!-- Form di acquisto Abbonamento -->
+                        <div id="subscription-form" class="subscription-form" style="display: none;">
+                            <h2>Abbonamenti</h2>
+                            <form action="buysubscription" method="POST">
+                                {% csrf_token %}
+                                <label for="stazione_partenza">Stazione di Partenza:</label>
+                                <select id="stazione_partenza" name="stazione_partenza" required>
+                                    {% if stazioni %}
+                                        {% for stazione in stazioni %}
+                                            <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option disabled>Nessuna stazione disponibile</option>
+                                    {% endif %}
+                                </select>
+                                
+                                <label for="stazione_arrivo">Stazione di Arrivo:</label>
+                                <select id="stazione_arrivo" name="stazione_arrivo" required>
+                                    {% if stazioni %}
+                                        {% for stazione in stazioni %}
+                                            <option value="{{stazione.citta}}">{{stazione.citta}}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option disabled>Nessuna stazione disponibile</option>
+                                    {% endif %}
+                                </select>
+
+                                <label for="classe">Classe:</label>
+                                <select id="classe" name="classe" required>
+                                    <option value="prima">Prima Classe</option>
+                                    <option value="seconda">Seconda Classe</option>
+                                </select>
+
+                                <label for="tipo_abbonamento">Tipo di Abbonamento:</label>
+                                <select id="tipo_abbonamento" name="tipo_abbonamento" required>
+                                    <option value="settimanale">Settimanale</option>
+                                    <option value="mensile">Mensile</option>
+                                    <option value="annuale">Annuale</option>
+                                </select>
+                                <button value="subscription" name="subscription" type="submit">Acquista Abbonamento</button>
+                            </form>
+                            {% if messages %}
+                                {% for message in messages%}
+                                    <p style="color: red;">{{ message }}</p>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>&copy; 2025 WebTickets. Tutti i diritti riservati.</p>
+            </footer>
+        </section>
+        <script src="{% static 'js/home.js' %}"></script>
+    </body>
+</html>

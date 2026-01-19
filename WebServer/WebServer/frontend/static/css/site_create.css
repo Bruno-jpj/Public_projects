@@ -1,0 +1,108 @@
+/* Font e corpo */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1e1e2f; /* sfondo scuro */
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+.header {
+    background-color: #2c3e50;
+    padding: 1rem;
+    color: white;
+    text-align: center;
+}
+
+/* Navbar */
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 20px;
+    font-size: 1.2rem;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+/* Layout */
+.layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* Form container */
+.main {
+    background-color: lightslategray;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Form stile */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+form label {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    display: block;
+}
+
+form input[type="text"],
+form input[type="url"],
+form textarea,
+form select {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #555;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #1c1c2a;
+    color: white;
+}
+
+form input::placeholder,
+form textarea::placeholder {
+    color: #aaa;
+}
+
+form input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Bottone */
+form button,
+form input[type="submit"] {
+    background-color: #2ecc71;
+    color: white;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover,
+form input[type="submit"]:hover {
+    background-color: #27ae60;
+}
+
+/* Messaggio di successo */
+div > p {
+    margin-top: 1rem;
+    color: #2ecc71;
+    font-weight: bold;
+    font-size: 1.1rem;
+}

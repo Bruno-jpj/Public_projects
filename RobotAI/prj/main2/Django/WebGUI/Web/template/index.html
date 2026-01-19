@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command GUI - Robot</title>
+</head>
+    <body>
+        <header></header>
+        <main>
+            <div>
+                <form action="{% url 'start' %}" method="post">
+                    {% csrf_token %}
+                    <!-- Auto Exploration -->
+                    <div>
+                        <label>Start Auto Exploration</label>
+                        <button type="submit" name="submit" value="start">Start</button>
+                    </div>
+                </form>
+                <form action="{% url 'stop' %}" method="post">
+                    {% csrf_token %}
+                    <!-- Stop Movement -->
+                    <div>
+                        <label>Stop Robot Movement</label>
+                        <button type="submit" name="submit" value="stop">Stop</button>
+                    </div>
+                </form>
+                <form action="{% url 'move'%}" method="post">
+                    {% csrf_token %}
+                    <!-- Move to coordinates -->
+                    <div>
+                        <label for="Xinput">Insert X Coordinate</label>
+                        <input type="number" name="Xinput" id="Xinput" required>
+
+                        <label for="Yinput">Insert Y Coordinate</label>
+                        <input type="number" name="Yinput" id="Yinput" required>
+
+                        <button type="submit" name="submit" value="move">Move Robot to (X, Y)</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2025 Robot GUI</p>
+        </footer>
+    </body>
+</html>

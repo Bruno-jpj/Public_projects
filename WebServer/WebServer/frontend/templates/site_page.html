@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Siti</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/site_page.css' %}">
+    <link rel="icon" href="{% static 'img/caffe_icon_32.png' %}" type="image/png">
+</head>
+<body>
+    <link rel="icon" type="image/png" href="{% static 'img/green_trian_16.png' %}" id="green_trian_16">
+    <link rel="icon" type="image/png" href="{% static 'img/red_trian_16.png' %}" id="red_trian_16">
+    
+    <section class="layout">
+
+        <div class="header">
+            <!-- Navbar -->
+            <nav class="navbar">
+                <a href="{% url 'home_page_view' %}">Home</a>
+            </nav>
+        </div>
+        <div class="main">
+            
+            <h1 class="title">Lista dei Siti</h1>
+
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th scope="col">Titolo</th>
+                        <th>Categoria
+                            <select class="table-filter" id="categoryFilter">
+                                <option value="">All</option>
+                                {% for key, label in category_choices %}
+                                    <option value="{{key}}"{% if request.GET.category == key %} selected {% endif %}>
+                                        {{label}}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </th>
+                        <th>Descrizione</th>
+                        <th>URL</th>
+                        <th>Obbligatorio Pagare
+                            <select class="table-filter" id="paidFilter">
+                                <option value="" {% if request.GET.paid == "" or request.GET.paid is None %}selected{% endif %}>All</option>
+                                <option value="true" {% if request.GET.paid == "true" or request.GET.paid is None %}selected{% endif %}>Yes</option>
+                                <option value="false" {% if request.GET.paid == "false" or request.GET.paid is None %}selected{% endif %}>No</option>
+                            </select>
+                        </th>
+                    </tr>
+                    {% for site in sites %}
+                        <tr>
+                            <td><a href="{% url 'dynamic_site_view' site.slug%}" target="_self"> {{site.title}} </a></td>
+                            <td>{{ site.category }}</td>
+                            <td>{{ site.description }}</td>
+                            <td><a href="{{ site.url }}" target="_blank">{{ site.url }}</a></td>
+                            <td>{% if site.paid %} ✅ Sì {% else %} ❌ No {% endif %}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5">Nessun sito trovato.</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="foot">
+        </div>
+    </section>
+    <script src="{% static 'js/site_page_script.js' %}"></script>
+</body>
+</html>

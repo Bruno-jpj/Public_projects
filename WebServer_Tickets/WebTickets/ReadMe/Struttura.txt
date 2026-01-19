@@ -1,0 +1,65 @@
+Home.html
+collegamenti:
+-> Account.html
+-> Info.html
+-> FindStation.html
+logiche:
+acquista biglietto/abbonamento e controllo sull'acquisto (metodo di pagamento, tutti campi inseriti corretti, acquisto solo se loggato)
+mostrare le stazioni 
+#
+
+Account.html
+collegamenti:
+-> Home.html
+logiche:
+logout
+login/signup
+mostra/modifica dati utente 
+mostra biglietti/abbonamenti comprati
+#
+
+FindStation.html
+collegamenti:
+-> Home.html
+-> Account.hmtl
+logiche:
+mostra info della stazione scelta (partenze/arrivi, ritardi/guasti, info generiche)
+#
+
+Info.html
+collegamenti:
+-> Home.html
+-> Account.html
+logiche:
+mostra tutte le info (stazioni, novità, offerte)
+#
+
+Login.html
+collegamenti:
+-> Home.html
+-> SignUp.html
+logiche:
+controlla il login (username & password)
+#
+
+SignUp.html
+collegamenti:
+-> Home.html
+-> login.html
+logiche:
+crea nuovo utente e poi rimanda al login
+#
+
+
+#
+Campi del Biglietto
+- Data acquisto (Biglietto_Abbonamento: data_acquisto)
+- Data del viaggio (Biglietto_Abbonamento: data_inizio, data_fine)
+- Anagrafica (Biglietto_Abbonamento: utente_id)
+- Stazione partenza ()
+- Stazione arrivo ()
+- Tratta riferimento (tratta_id)
+- Numero passeggeri ()
+- Classe vagone ()
+
+Campi dell'Abbonamento

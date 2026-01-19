@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventi</title>
+    <link rel="stylesheet" href="{% static 'css/eventi.css' %}">
+</head>
+<body>
+    <header>
+        <div>
+            <h1>
+                La location perfetta per i tuoi eventi a Orciano di Pesaro
+            </h1>
+        </div>
+    </header>
+    <main>
+        <div>
+            <p>
+                La nostra location ampia e spaziosa con veranda vetrata è perfetta per ospitare 
+                cerimonie, eventi speciali e convention, per un massimo di 150 persone. Che si tratti 
+                di cresime, comunioni, anniversari o incontri aziendali, creiamo menù speciali in 
+                un'atmosfera accogliente e familiare per rendere ogni evento indimenticabile. 
+            </p>
+        </div>
+        <div>
+            <h2>I nostri servizi esclusivi:</h2>
+            <div>
+                <h2>Menù speciali per ogni occasione:</h2>
+                <p>  
+                    desiderate trascorrere le festività più sentite come il Natale o la Pasqua nel calore del 
+                    nostro ristorante? Lasciatevi ispirare dai nostri menù creati appositamente per 
+                    celebrare questi momenti speciali e venite a festeggiare con noi in un'atmosfera 
+                    accogliente e ricca di tradizione. 
+                </p>
+                <form action="{% url 'events_menu' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="redirect" value="menu_eventi">SCOPRI I MENÚ</button>
+                </form>
+            </div>
+            <div>
+                <h2>Celebrazioni speciali:</h2>
+                <p>
+                    festeggia con noi ogni ricorrenza speciale. Che stiate celebrando un gioioso battesimo, 
+                    un indimenticabile compleanno, un importante anniversario, battesimo, cresima, 
+                    comunione o una meritata laurea, vi offriamo la possibilità di personalizzare il vostro 
+                    menù e di prenotare servizi aggiuntivi per rendere la vostra festa assolutamente unica e 
+                    memorabile. 
+                </p>
+            </div>
+            <div>
+                <h2>Convention e meeting aziendali: </h2>
+                <p>
+                    la nostra location è ideale per organizzare convention, meeting aziendali, workshop e 
+                    seminari. La nostra ampia e luminosa veranda offre infatti una flessibilità di 
+                    allestimento che si adatta perfettamente alle diverse esigenze di accoglienza e 
+                    preparazione di eventi professionali. All’occorrenza ci dotiamo di attrezzature 
+                    tecniche per proiezioni audiovisive. La comodità di ristorazione interna e la possibilità 
+                    di pernottamento in loco assicurano inoltre un'esperienza a 360 gradi e senza 
+                    preoccupazioni per i partecipanti. Offriamo un servizio su misura, lavorando a stretto 
+                    contatto con i nostri clienti per esaudire ogni loro singola esigenza. 
+                </p>
+            </div>
+            <div>
+                <form action="{% url 'events_res' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="redirect" value="prenotazione_eventi">Contattaci</button>
+                </form>
+            </div>
+        </div>
+        <!-- Messaggi -->
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </main>
+    <footer></footer>
+</body>
+</html>

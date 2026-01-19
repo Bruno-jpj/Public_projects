@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site detail </title>
+</head>
+<body>
+    <div class="head">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <a href="{% url 'site_list_view' %}">Pagina Siti</a>
+        </nav>
+    </div>
+    <div class="main">
+        <h1>Titolo: </h1>{{site.title}}
+        <h1>Categoria: </h1>{{ site.category }}
+        <h1>Descrizione: </h1>{{ site.description }}
+        <h1>Sito: </h1><a href="{{ site.url }}" target="_blank">{{ site.url }}</a>
+        <h1>Pagamento: </h1>{% if site.paid %} ✅ Sì {% else %} ❌ No {% endif %}
+    </div>
+    <div class="foot">
+    </div> 
+</body>
+</html>

@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ristorante</title>
+    <link rel="stylesheet" href="{% static 'css/ristorante.css' %}">
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Ristorante Il Castagno: Cucina Casareccia e Tradizionale a Orciano di Pesaro </h1>
+        </div>
+    </header>
+    <main>
+        <div>
+            <div>
+                <p>
+                    Il Ristorante Il Castagno, situato nel cuore di Orciano di Pesaro, è un punto di 
+                    riferimento per gli amanti della cucina casereccia e tradizionale. La nostra passione 
+                    per i sapori autentici si traduce in piatti gustosi, preparati con ingredienti freschi e di 
+                    stagione, seguendo le ricette di una volta. Dai sapori intensi del tartufo alla leggerezza 
+                    del pesce, dalla pasta fatta in casa alla carne alla griglia: il nostro menù è un viaggio 
+                    nella cucina italiana più autentica. Aggiungi l’atmosfera accogliente e l’ospitalità 
+                    sincera, ed ecco la ricetta per un’esperienza perfetta.
+                </p>
+            </div>
+            <div>
+                <P>
+                    Vieni a gustare le nostre specialità: 
+                    Pasta fatta a mano: tirata al matterello, con ingredienti genuini, seguendo le ricette di 
+                    una volta, come vuole la tradizione e accompagnata da sughi ricchi e saporiti.
+                    <div>
+                        <form action="{% url 'tortelloni' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" name="redirect" value="ricetta_tortelloni">SCOPRI LA RICETTA DEI NOSTRI TORTELLONI</button>
+                        </form>
+                    </div>   
+                    Tacconi: un vero piatto della tradizione. Pasta artigianale tipica della provincia di 
+                    Pesaro e Urbino che viene preparata con farina di fava di provenienza locale macinata 
+                    a pietra, poi unita a farina di grano tenero, sale e pepe. Il colore è giallastro e il sapore 
+                    è delicato, con punte dolciastri ma uniformemente sapido. La pasta, compatta e 
+                    rugosa, trattiene bene il sugo, ed è lunga circa 20-25 mm. Noi la proponiamo così 
+                    come vuole la tradizione: povera negli ingredienti, ma ricca di gusto in versione 
+                    contadina o marinara. È un prodotto che viene dalla povertà: un tempo, infatti, quando 
+                    anche la farina di grano era considerata un lusso, si usava mescolarla con altri tipi di 
+                    farina più economici, tra cui quella ottenuta dalle fave. Da questa usanza, sono nati i 
+                    tacconi , detti anche “tacòn”. 
+                    <div>
+                        <form action="{% url 'tacon' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" name="redirect" value="ricetta_tacon">SCOPRI LA RICETTA</button>
+                        </form>
+                    </div> 
+                    Specialità di carne: grigliate con tagli selezionati e cotture esperte. Per un'esperienza 
+                    gustativa diversa, scoprirete anche le nostre carni con tartufo nero, un abbinamento 
+                    che esalta i sapori con eleganza. 
+                    Specialità di pesce: chi l’ha detto che per gustare dell’ottimo pesce bisogna andare al 
+                    mare? Al Ristorante Il Castagno puoi gustare antipasti di mare caldi o freddi, primi 
+                    piatti gustosi, grigliate miste, fritture e molto altro. 
+                    Pizza: fragrante e gustosa, preparata con un impasto leggero e ingredienti di qualità 
+                    selezionati. Cotta alla perfezione nel forno a legna o nel nostro moderno forno a gas, 
+                    ogni pizza è una delizia.   
+                    Gelati artigianali: preparati con ingredienti freschissimi e di qualità, senza coloranti né 
+                    conservanti, per un gusto autentico.
+                </P>
+            </div>
+            <div>
+                <p>
+                    <!-- ci vogliono i link ai vari tipi di menù -->
+                    Scopri i nostri menù:
+                    • DA ASPORTO  
+                    • ALLA CARTA 
+                    • MENÚ DI CARNE 
+                    • MENÚ DI PESCE 
+                    • PIZZE
+                </p>
+            </div>
+            <div>
+                <form action="{% url 'restaurant_res' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="redirect" value="prenotazione_ristorante"> Prenota un tavolo/contattaci </button>
+                </form>
+            </div> 
+        </div>
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </main>
+    <footer></footer>
+</body>
+</html>

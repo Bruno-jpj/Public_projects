@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione</title>
+    <link rel="stylesheet" href="{% static 'css/sign_up.css' %}">
+</head>
+<body>
+    <head class="header">
+         <div class="divbar">
+            <nav class="navbar">
+                <a href="{% url 'home' %}">Home</a>
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            </nav>
+        </div>
+    </head>
+    <main class="main">
+        <div class="container">
+            <form action="#" method="post">
+
+                {% csrf_token %}
+
+                <h2>Registrazione</h2>
+                <label for="name">Nome:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="surname">Cognome:</label>
+                <input type="text" id="surname" name="surname" required>
+
+                <label for="codicefiscale">Codice Fiscale:</label>
+                <input type="text" id="codicefiscale" name="codicefiscale" required>
+
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="password1">Password:</label>
+                <input type="password" id="password1" name="password1" required>
+
+                <label for="password2">Conferma Password:</label>
+                <input type="password" id="password2" name="password2" required>
+
+                <button type="submit">Registrati</button>
+            </form>
+            {% if messages %}
+                {% for message in messages%}
+                    <p style="color: red;">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <div class="switch">
+                <p>Hai già un account? <a href="{% url 'login_view' %}">Accedi</a></p>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+            <p>&copy; 2025 WebTickets. Tutti i diritti riservati.</p>
+    </footer>
+</body>
+</html>

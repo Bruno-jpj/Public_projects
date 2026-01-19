@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Hotel Ristorante Il Castagno</h1>
+            <nav>
+                <form action="{% url 'home' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="redirect" value="home">HOME</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="auth-container">
+            <form method="post">
+                {% csrf_token %}
+                <h2>Login</h2>
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Accedi</button>
+                <p>Non hai un account? <a href="{% url 'signup' %}">Registrati</a></p>
+            </form>
+        </div>
+    <!-- Messaggi -->
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </main>
+    <footer>
+
+    </footer>
+</body>
+</html>
