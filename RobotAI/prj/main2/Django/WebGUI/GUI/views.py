@@ -10,7 +10,7 @@ from GUI.extra.conn_db import conn_db
 
 from GUI.models import Cmd
 
-from rest_framework import generics
+#from rest_framework import generics
 
 # set command
 SET_CMD = {

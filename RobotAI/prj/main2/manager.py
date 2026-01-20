@@ -1,6 +1,5 @@
 import requests, time, json, sys
 
-
 from agent import Agent
 from simulation import Simulation
 from BFT_Alg import Bft
@@ -91,6 +90,8 @@ def update_map(simulation, ax):
     ml.draw_map(simulation.robot_map, ax, simulation.w, simulation.h)
 #
 # Program Start Point 
+
+# TODO: check if last command is different or same (agent wait the command response from the WebGui, it waits 2 seconds[checkdata func time.sleep], and do the action next)
 def run():
     agent = Agent()
     simulation = Simulation()

@@ -1,0 +1,47 @@
+Num-Process: [0]
+Data received: {'command': 'Start'}
+Full response: {"command": "Start"}
+Request Status Code: 200
+Command Start
+Exception catched: [[Errno 2] No such file or directory: '/home/userbruno/Scrivania/github/Public_projects/RobotAI/prj/main2/map.txt.npz']
+Num-Process: [0]
+Data received: {'command': 'Start'}
+Full response: {"command": "Start"}
+Request Status Code: 200
+Command Start
+Exception catched: [too many values to unpack (expected 6)]
+Num-Process: [0]
+Data received: {'command': 'Start'}
+Full response: {"command": "Start"}
+Request Status Code: 200
+Command Start
+Exception catched: [too many values to unpack (expected 6)]
+Num-Process: [0]
+Data received: {'command': 'Start'}
+Full response: {"command": "Start"}
+Request Status Code: 200
+Command Start
+Exception catched: [too many values to unpack (expected 6)]
+Num-Process: [0]
+Data received: {'command': 'Start'}
+Full response: {"command": "Start"}
+Request Status Code: 200
+Command Start
+Exception catched: [too many values to unpack (expected 6)]
+Num-Process: [0]
+Data received: {'command': 'Start'}
+Full response: {"command": "Start"}
+Request Status Code: 200
+Command Start
+Exception catched: [too many values to unpack (expected 6)]
+Num-Process: [0]
+Data received: {'command': 'Start'}
+Full response: {"command": "Start"}
+Request Status Code: 200
+Command Start
+Exception catched: [too many values to unpack (expected 6)]
+Num-Process: [0]
+Data received: {'command': 'Start'}
+Full response: {"command": "Start"}
+Request Status Code: 200
+Traceback (most recent call last):

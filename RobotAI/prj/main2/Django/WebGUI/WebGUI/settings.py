@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'GUI'
 
     # REST-App
-    'rest_framework'
+    #'rest_framework'
 ]
 
 MIDDLEWARE = [
