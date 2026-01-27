@@ -123,6 +123,10 @@ def service_machine(request: HttpRequest):
 #
 @customer_is_logged_in
 def customer_home(request: HttpRequest):
+    try:
+        return render(request, template.CUSTOMER_HOME)
+    except Exception as e:
+        pass
     return render(request, template.CUSTOMER_HOME)
 #
 @customer_is_logged_in
