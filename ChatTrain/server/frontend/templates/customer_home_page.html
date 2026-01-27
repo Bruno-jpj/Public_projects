@@ -3,97 +3,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Ticket Service</title>
 </head>
 <body>
+    <header></header>
+    <main>
+        <div id="chat">
+            {% for msg in sent_messages %}
 
-<main>
-
-    <!-- CHAT AREA -->
-    <div id="chat">
-        {% for msg in messages %}
-            <div class="message {% if msg.sender == user %}sent{% else %}received{% endif %}">
-                {{ msg.text }}
-            </div>
-        {% empty %}
-            <p>No messages yet</p>
-        {% endfor %}
-    </div>
-
-    <!-- SEND MESSAGE -->
-    <form action="{% url 'send_msg' ticket.id %}" method="post">
-        {% csrf_token %}
-        <textarea name="text" required></textarea>
-        <button type="submit">Send</button>
-    </form>
-
-    <!-- MACHINE INFO -->
-    <form action="{% url 'get_info' %}" method="get">
-        <input type="text" name="machine_code" required>
-        <button type="submit">Machine info</button>
-    </form>
-
-</main>
-
+            {% empty %}
+                <p>No messages yet.</p>
+            {% endfor %}
+        </div>
+        <form action="{% url 'send_msg' ticket.id %}" method="post" name="send_msg">
+            {% csrf_token %}
+            <textarea name="text" id="msg_area" required></textarea>
+            <button type="submit">Send</button>
+        </form>
+        <form action="{% url 'machine_info' %}" method="get" name="machine_info">
+            {% csrf_token %}
+            <input type="text" name="machine_code" id="machine_code" required>
+            <button type="submit">Machine Info</button>
+        </form>
+    </main>
+    <footer></footer>
 </body>
 </html>
-<!--
-VIEW ESEMPIO DI CHAT-GPT:
-def ticket_view(request, ticket_id):
-    ticket = Ticket.objects.get(id=ticket_id)
-    messages = Message.objects.filter(ticket=ticket).order_by("created_at")
-
-    return render(request, "ticket.html", {
-        "ticket": ticket,
-        "messages": messages,
-    })
-#
-def send_msg(request, ticket_id):
-    if request.method == "POST":
-        Message.objects.create(
-            ticket_id=ticket_id,
-            sender=request.user,
-            text=request.POST["text"]
-        )
-    return redirect("ticket_view", ticket_id=ticket_id)
-#
-def get_info(request):
-    code = request.GET.get("machine_code")
-
-    machine = Machine.objects.filter(code=code).first()
-
-    return render(request, "machine_info.html", {
-        "machine": machine
-    })
-#
-MODEL ESEMPIO CHAT-GPT:
-class Message(models.Model):
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-    sender = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-#
-URL ESEMPIO CHAT-GPT
-from django.urls import path
-from . import views
-
-urlpatterns = [
-    # vista principale del ticket (mostra chat)
-    path("ticket/<int:ticket_id>/", views.ticket_view, name="ticket_view"),
-
-    # invio messaggio
-    path("ticket/<int:ticket_id>/send/", views.send_msg, name="send_msg"),
-
-    # info macchina
-    path("machine/info/", views.get_info, name="get_info"),
-]
-
-from django.contrib import admin
-from django.urls import path, include
-
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("tickets/", include("tickets.urls")),
-]
-
--->

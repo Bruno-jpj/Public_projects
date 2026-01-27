@@ -18,13 +18,21 @@ from ChatLogic.models import (
     Tickets
 )
 
-HOME_TEMPLATE = 'home.html'
+class HTML_FILES(Enum):
+    HOME_TEMPLATE = 'home.html'
+    ADMIN_PANEL = 'admin_panel.hmtl'
+    CUSTOMER_HOME = 'customer_home_page.html'
+    CUSTOMER_MACHINE = 'customer_machine_info.html'
+    SERVICE_HOME = 'service_home_page.html'
+    SERVICE_MACHINE = 'service_machine_info.html'
+
+template = HTML_FILES
 
 # Create your views here.
 class HomeLogic(View):
-    
+
     def get(self, request: HttpRequest):
-        return render(request, HOME_TEMPLATE)
+        return render(request, template.HOME_TEMPLATE)
     
     def post(self, request: HttpRequest):
         try:
@@ -35,7 +43,7 @@ class HomeLogic(View):
                 return redirect('signup')
         except Exception as e:
             print(f"Exception: [{e}]")
-        return render(request, HOME_TEMPLATE)
+        return render(request, template.HOME_TEMPLATE)
 #
 def login(request: HttpRequest, response: HttpResponse):
     if request.method == "POST":
@@ -65,14 +73,14 @@ def login(request: HttpRequest, response: HttpResponse):
                     request.session['customer_id'] = customer_user.id
                     return redirect('customer_home')
             else:
-                return render(request, HOME_TEMPLATE)
+                return render(request, template.HOME_TEMPLATE)
         except Exception as e:
             print(f"Exception Login: [{e}]")
         except Customers.DoesNotExist:
             messages.error(request, "Customer does not exists.")
         except Service.DoesNotExist:
             messages.error(request, "Service does not exists")
-    return render(request, HOME_TEMPLATE)
+    return render(request, template.HOME_TEMPLATE)
 #
 def signup(request: HttpRequest, response: HttpResponse):
     if request.method == "POST":
@@ -99,25 +107,41 @@ def signup(request: HttpRequest, response: HttpResponse):
             messages.success(request, "User created successfuly")
         except Exception as e:
             messages.error(request, f"Error: Customer not created [{e}]")
-    return render(request, HOME_TEMPLATE)
+    return render(request, template.HOME_TEMPLATE)
 #
 @service_is_logged_in
 def admin_panel(request: HttpRequest):
-    pass
+    return render(request, template.ADMIN_PANEL)
 #
 @service_is_logged_in
 def service_home(request: HttpRequest):
-    pass
+    return render(request, template.SERVICE_HOME)
 #
 @service_is_logged_in
 def service_machine(request: HttpRequest):
-    pass
+    return render(request, template.SERVICE_MACHINE)
 #
 @customer_is_logged_in
 def customer_home(request: HttpRequest):
-    pass
+    return render(request, template.CUSTOMER_HOME)
 #
 @customer_is_logged_in
 def customer_machine(request: HttpRequest):
-    pass
+    return render(request, template.CUSTOMER_MACHINE)
 #
+def send_msg(request: HttpRequest, ticket_id):
+    try:
+        user_id = request.session.get('user_id')
+        if not user_id:
+            messages.warning(request, "You need to login")
+            return redirect('login')
+        if request.session.accessed:
+            user_info = request.session.save(True)
+            print(f"User Info Send msg: [{user_info}]")
+    except Exception as e:
+        print(e)
+        return redirect('HomeLogic')
+    return redirect('HomeLogic')
+#
+def create_ticket(request: HttpRequest, ticket_id):
+    pass

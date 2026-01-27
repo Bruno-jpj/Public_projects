@@ -1,3 +1,4 @@
+DROP TABLE if EXISTS Messages;
 DROP TABLE if EXISTS CustomerMachine;
 DROP TABLE if EXISTS Tickets;
 DROP TABLE if EXISTS Machine;
@@ -29,8 +30,6 @@ service_id INTEGER NOT NULL,
 machine_id INTEGER NOT NULL,
 opened_date date NOT NULL,
 closed_date date,
-problem_title TEXT NOT NULL,
-problem_text TEXT NOT NULL,
 status TEXT NOT NULL CHECK (status in ('closed', 'open', 'working')),
 
 FOREIGN KEY (customer_id) REFERENCES Customers(id) on DELETE CASCADE on UPDATE CASCADE,
@@ -46,4 +45,13 @@ customer_id INTEGER NOT NULL,
 
 FOREIGN KEY (machine_id) REFERENCES Machine(id) on DELETE CASCADE on UPDATE CASCADE,
 FOREIGN KEY (customer_id) REFERENCES Customers(id) on DELETE CASCADE on UPDATE CASCADE
+);
+CREATE TABLE if NOT EXISTS Messages(
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+sender TEXT NOT NULL CHECK (sender in ('customer','service', 'admin')), -- to know which is
+sender_id INTEGER NOT NULL, -- associate with the correct id in case of query
+sent_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+message_text TEXT NOT NULL, -- ALTER TABLE Messages ADD COLUMN message_text TEXT NOT NULL;
+ticket_id INTEGER NOT NULL,
+FOREIGN KEY (ticket_id) REFERENCES Tickets(id) on DELETE CASCADE on UPDATE CASCADE
 );

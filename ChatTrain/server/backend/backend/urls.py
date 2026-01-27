@@ -24,10 +24,14 @@ from ChatLogic.views import (
     service_home,
     service_machine,
     customer_home,
-    customer_machine
+    customer_machine,
+    send_msg,
+    create_ticket,
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', HomeLogic.as_view(), name='home')
+    path('', HomeLogic.as_view(), name='home'),
+    path('machine_info/', customer_machine, name='customer_info'),
+    path('sent_msg/', send_msg, name='send_msg')
 ]

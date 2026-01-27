@@ -9,8 +9,8 @@ from django.db import models
 
 
 class Customermachine(models.Model):
-    machine = models.ForeignKey('Machine', models.DO_NOTHING)
-    customer = models.ForeignKey('Customers', models.DO_NOTHING)
+    machine = models.ForeignKey('Machine', on_delete=models.DO_NOTHING)
+    customer = models.ForeignKey('Customers', on_delete=models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -37,9 +37,29 @@ class Machine(models.Model):
         db_table = 'Machine'
 
 
+class Messages(models.Model):
+    SENDER_CHOICES = [
+        ("customer", "Customer"),
+        ("service","Service"),
+        ("admin", "Admin")
+    ]
+
+    # choices is a built-in func
+    sender = models.TextField(choices=SENDER_CHOICES)
+    sender_id = models.IntegerField()
+    sent_at = models.DateTimeField()
+    ticket = models.ForeignKey('Tickets', on_delete=models.DO_NOTHING)
+    message_text = models.TextField()
+
+    class Meta:
+        managed = False
+        db_table = 'Messages'
+
+
 class Service(models.Model):
     serv_code = models.TextField(unique=True)
     serv_pwd = models.TextField()
+    is_admin = models.IntegerField()
 
     class Meta:
         managed = False
@@ -47,13 +67,11 @@ class Service(models.Model):
 
 
 class Tickets(models.Model):
-    customer = models.ForeignKey(Customers, models.DO_NOTHING)
-    service = models.ForeignKey(Service, models.DO_NOTHING)
-    machine = models.ForeignKey(Machine, models.DO_NOTHING)
+    customer = models.ForeignKey(Customers, on_delete=models.DO_NOTHING)
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING)
+    machine = models.ForeignKey(Machine, on_delete=models.DO_NOTHING)
     opened_date = models.DateField()
     closed_date = models.DateField(blank=True, null=True)
-    problem_title = models.TextField()
-    problem_text = models.TextField()
     status = models.TextField()
 
     class Meta:
