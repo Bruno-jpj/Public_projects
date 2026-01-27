@@ -1,0 +1,55 @@
+<!-- 
+- entry point for customer & service
+\_ login based of username, pwd for service & customer
+\_ signup based on username, password, customer_code; only customer can signup
+-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <header></header>
+    <main>
+        <div class="content">
+            <div class="login">
+                <form action="login" method="post">
+                    {% csrf_token %}
+
+                    <label for="html">Login Form</label>
+                    <br>
+                    <input type="text" name="username" id="username" required formmethod="post" placeholder="Username">
+                    <input type="password" name="password" id="password" required formmethod="post" placeholder="Password">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p style="color: red;">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                    <button type="submit">Login</button>
+                </form>
+                <div class="signup">
+                    <form action="signup" method="post"></form>
+                    {% csrf_token %}
+
+                    <label for="html">Sign Up Form</label>
+                    <br>
+                    <input type="text" name="username" id="username" required formmethod="post" placeholder="Username" minlength="8">
+                    <input type="password" name="password" id="password" required formmethod="post" placeholder="Password" minlength="8">
+                    <input type="text" name="customer" id="customer" required formmethod="post" placeholder="Customer Name" minlength="8">
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p style="color: red;">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                    <button type="submit">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer></footer>
+</body>
+</html>

@@ -18,7 +18,13 @@ from django.contrib import admin
 from django.urls import path
 
 from ChatLogic.views import (
-    HomeLogic
+    HomeLogic,
+    login,
+    signup,
+    service_home,
+    service_machine,
+    customer_home,
+    customer_machine
 )
 
 urlpatterns = [

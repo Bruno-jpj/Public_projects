@@ -1,0 +1,9 @@
+- DataDump.db : 
+contains all the chat text (for now, later img and videos)
+
+- WebServer.db :
+contains all the webserver data, like: 
+-- service assistance username, password
+-- client username, password
+-- machine info
+-- 

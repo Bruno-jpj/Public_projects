@@ -1,0 +1,34 @@
+<!--
+- service can see the chat based on the machineID, (all service assistance can see every chat)
+-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Ticket Response</title>
+</head>
+<body>
+    <header></header>
+    <main>
+        <div>
+            <form action="send_msg" method="post">
+                {% csrf_token %}
+                <label for="msg">Write your message down here</label>
+                <textarea name="write_msg" id="write_msg" required>Type your message here....</textarea>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+        <div>
+            <form action="get_info" method="get">
+                {% csrf_token %}
+                <label for="info">To take info of a machine insert machine code</label>
+                <input type="text" name="machine_info" id="machine_info" required>
+                <button type="submit">Click for machine info</button>
+            </form>
+        </div>
+    </main>
+    <footer></footer>
+</body>
+</html>
