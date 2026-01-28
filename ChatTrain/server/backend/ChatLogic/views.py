@@ -19,12 +19,12 @@ from ChatLogic.models import (
 )
 
 class HTML_FILES(Enum):
-    HOME_TEMPLATE = 'home.html'
-    ADMIN_PANEL = 'admin_panel.hmtl'
-    CUSTOMER_HOME = 'customer_home_page.html'
-    CUSTOMER_MACHINE = 'customer_machine_info.html'
-    SERVICE_HOME = 'service_home_page.html'
-    SERVICE_MACHINE = 'service_machine_info.html'
+    HOME_TEMPLATE = 'home.html',
+    ADMIN_PANEL = 'admin_panel.hmtl',
+    CUSTOMER_HOME = 'customer_home_page.html',
+    CUSTOMER_MACHINE = 'customer_machine_info.html',
+    SERVICE_HOME = 'service_home_page.html',
+    SERVICE_MACHINE = 'service_machine_info.html',
 
 template = HTML_FILES
 
@@ -32,7 +32,7 @@ template = HTML_FILES
 class HomeLogic(View):
 
     def get(self, request: HttpRequest):
-        return render(request, template.HOME_TEMPLATE)
+        return render(request, template.HOME_TEMPLATE.value)
     
     def post(self, request: HttpRequest):
         try:
@@ -43,7 +43,7 @@ class HomeLogic(View):
                 return redirect('signup')
         except Exception as e:
             print(f"Exception: [{e}]")
-        return render(request, template.HOME_TEMPLATE)
+        return render(request, template.HOME_TEMPLATE.value)
 #
 def login(request: HttpRequest, response: HttpResponse):
     if request.method == "POST":
@@ -73,14 +73,14 @@ def login(request: HttpRequest, response: HttpResponse):
                     request.session['customer_id'] = customer_user.id
                     return redirect('customer_home')
             else:
-                return render(request, template.HOME_TEMPLATE)
+                return render(request, template.HOME_TEMPLATE.value)
         except Exception as e:
             print(f"Exception Login: [{e}]")
         except Customers.DoesNotExist:
             messages.error(request, "Customer does not exists.")
         except Service.DoesNotExist:
             messages.error(request, "Service does not exists")
-    return render(request, template.HOME_TEMPLATE)
+    return render(request, template.HOME_TEMPLATE.value)
 #
 def signup(request: HttpRequest, response: HttpResponse):
     if request.method == "POST":
@@ -107,33 +107,29 @@ def signup(request: HttpRequest, response: HttpResponse):
             messages.success(request, "User created successfuly")
         except Exception as e:
             messages.error(request, f"Error: Customer not created [{e}]")
-    return render(request, template.HOME_TEMPLATE)
+    return render(request, template.HOME_TEMPLATE.value)
 #
 @service_is_logged_in
 def admin_panel(request: HttpRequest):
-    return render(request, template.ADMIN_PANEL)
+    return render(request, template.ADMIN_PANEL.value)
 #
 @service_is_logged_in
 def service_home(request: HttpRequest):
-    return render(request, template.SERVICE_HOME)
+    return render(request, template.SERVICE_HOME.value)
 #
 @service_is_logged_in
 def service_machine(request: HttpRequest):
-    return render(request, template.SERVICE_MACHINE)
+    return render(request, template.SERVICE_MACHINE.value)
 #
 @customer_is_logged_in
 def customer_home(request: HttpRequest):
-    try:
-        return render(request, template.CUSTOMER_HOME)
-    except Exception as e:
-        pass
-    return render(request, template.CUSTOMER_HOME)
+    return render(request, template.CUSTOMER_HOME.value)
 #
 @customer_is_logged_in
 def customer_machine(request: HttpRequest):
-    return render(request, template.CUSTOMER_MACHINE)
+    return render(request, template.CUSTOMER_MACHINE.value)
 #
-def send_msg(request: HttpRequest, ticket_id):
+def send_msg(request: HttpRequest):
     try:
         user_id = request.session.get('user_id')
         if not user_id:

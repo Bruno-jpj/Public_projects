@@ -11,12 +11,12 @@
     <main>
         <div id="chat">
             {% for msg in sent_messages %}
-
+                <p>{{ msg }}</p>
             {% empty %}
                 <p>No messages yet.</p>
             {% endfor %}
         </div>
-        <form action="{% url 'send_msg' ticket.id %}" method="post" name="send_msg">
+        <form action="{% url 'send_msg' %}" method="post" name="send_msg">
             {% csrf_token %}
             <textarea name="text" id="msg_area" required></textarea>
             <button type="submit">Send</button>

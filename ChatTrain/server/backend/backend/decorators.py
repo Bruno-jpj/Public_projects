@@ -21,10 +21,11 @@ def customer_is_logged_in(func):
                 return func(request, *args, **kwargs)
             except Exception as e:
                 messages.info(request, f"Username not valid. Please retry. Error Code [{e}]")
-                return redirect('home.hmtl')
+                return redirect("HomeLogic")
         else:
             messages.info(request, "Please try to login first")
-            return redirect('home.html')
+            print("decorator here.....")
+            return HttpResponse("Hi from decorator. Customer didn't logged in.")
     return wrapper
 #
 def service_is_logged_in(func):
@@ -42,8 +43,9 @@ def service_is_logged_in(func):
                 return func(request, *args, **kwrags)
             except Exception as e:
                 messages.info(request, f"Username not valid. Please retry. Error Code [{e}]")
-                return redirect('home.hmtl')
+                return redirect('HomeLogic')
         else:
             messages.info(request, "Please try to login first")
-            return redirect('home.html')
+            #return redirect("Service not logged in..... HI from decorator")
+            return HttpResponse("Hi from decorator. Service/Admin didn't logged in.")
     return wrapper

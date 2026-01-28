@@ -32,6 +32,10 @@ from ChatLogic.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomeLogic.as_view(), name='home'),
-    path('machine_info/', customer_machine, name='customer_info'),
-    path('sent_msg/', send_msg, name='send_msg')
+    path('customer_home/', customer_home, name='customer_home'),
+    path('service_home/', service_home, name='service_home'),
+    path('customer_machine/', customer_machine, name='customer_info'),
+    path('service_machine', service_machine, name='service_info'),
+    path('sent_msg/', send_msg, name='send_msg'),
+    path('create_ticket/', create_ticket, name='create_ticket')
 ]
