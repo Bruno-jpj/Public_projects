@@ -16,10 +16,10 @@ UNKNOWN = 2
 ROBOT = 3
 
 # path
-SAVED_MAP_PATH = r'prj/main2/map/saved_map.npz'
+SAVED_MAP_PATH = r'prj\main2\map\saved_map.npz'
 
 # Robot Map (x,y) coordinates 
-MAP_ROBOT_PATH = r'/home/userbruno/Scrivania/github/Public_projects/RobotAI/prj/main2/map.txt'
+MAP_ROBOT_PATH = r'prj\main2\map\map.txt'
 
 # app name
 APP_NAME = "Command GUI"

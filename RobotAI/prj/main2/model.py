@@ -20,7 +20,7 @@ class Linear_QNet(nn.Module):
         return x
     
     def save(self, file_name='model.pth'):
-        model_path = 'prj/main2/model'
+        model_path = r'prj\main2\model'
         if not os.path.exists(model_path):
             os.makedirs(model_path)
         file_name = os.path.join(model_path, file_name)

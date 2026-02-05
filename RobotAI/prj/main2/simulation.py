@@ -238,7 +238,7 @@ class Simulation:
     #
     ''' MOVIMENTO RELATIVO
     def spec_move(self, path):
-    self.chosen_path = path
+        self.chosen_path = path
 
     for dx, dy in self.chosen_path:
         new_position = Point(

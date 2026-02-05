@@ -23,7 +23,7 @@ def CheckData():
         
         print(f"Num-Process: [{n_process}]")
         n_process += 1
-
+        
         print(f"Data received: {data}")
         print(f"Full response: {r.text}")
         print(f"Request Status Code: {r.status_code}")
@@ -41,7 +41,7 @@ def CheckData():
     except Exception as e:
         print(f"Unexpected Exception: [{e}]")
     #
-    time.sleep(2)
+    # time.sleep(2)
     #
     if not data:
         pass
@@ -107,63 +107,74 @@ def run():
     fig, ax = plt.subplots()
     plt.show(block = False)
     #
+    last_data = None
+    data = CheckData()
     while True:
-        data = CheckData()
         #
-        try:
-            #command_text = data.get("command")
-            command_text = data["command"]
-            if command_text == "Start":
-                print(f"Command Start")
-                agent_reward, agent_record, agent_tot_reward, agent_score, movement, loss = start_agent(agent, simulation, agent_reward, agent_record, agent_tot_reward, agent_score, flag_end, fig, ax)
-                print(f"Movement: [{movement}] | Score: [{agent_score}] | Trophies: [{simulation.tot_trophies}] | Reward: [{agent_reward}] | Tot-Reward: [{agent_tot_reward}] | Loss: [{loss}]")
-                #
-            elif command_text == "Stop":
-                print(f"Command Stop")
-                # simulation.current_move = None
-                flag_end = True
-                start_agent(flag_end)
-                #
-            elif command_text and  "Move to" in command_text:
-                print(f"Command Move to")
-                '''
-                - implementare BFT per il path finding.
-                - movimento del robot con Agent (in caso di ostacoli), in caso di ostacoli ricalcolo percorso
-                - nel BFT non gestisco casistica degli ostacoli in modo corretto
-                '''
-                x,y = input("Inserisci la posizione (x,y)")
-                target = (x,y)
-                bft = Bft(simulation.robot, target, simulation.obstacles)
-
-                path = bft.search()
-
-                if path:
-                    print("Percorso trovato:")
-                    print(path)
-
-                    # stop - in caso di movimento precedente si ferma
-                    simulation.current_move = None
-
-                    # start
-                    simulation.current_move = simulation.spec_move(path)
-                    MoveTo()
-                else:
-                    print("EndPoint non raggiungibile")
+        if last_data != data or last_data is None:
             #
-            elif command_text == "None": # None case
-                print(f"None Command..")
-            else:
-                print(f"Unknown Command: [{command_text}]")
-                raise ValueError("Unknown Command")
-        except Exception as e:
-            print(f"Exception catched: [{e}]")
-        except ValueError as ve:
-            print(f"Value Error: [{ve}]")
-        except KeyError as ke:
-            print(f"Key Error, missing key [command]: [{ke}]")
+            try:
+                #command_text = data.get("command")
+                command_text = data["command"]
+
+                if command_text == "Start":
+                    print(f"Command Start")
+                    generator = start_agent(agent, simulation, agent_reward, agent_record, agent_tot_reward, agent_score, flag_end, fig, ax)
+                    agent_reward, agent_record, agent_tot_reward, agent_score, movement, loss = next(generator)
+                    print(f"Movement: [{movement}] | Score: [{agent_score}] | Trophies: [{simulation.tot_trophies}] | Reward: [{agent_reward}] | Tot-Reward: [{agent_tot_reward}] | Loss: [{loss}]")
+                    #
+                elif command_text == "Stop":
+                    print(f"Command Stop")
+                    # simulation.current_move = None
+                    start_agent(flag_end = True)
+                    #
+                elif command_text and  "Move to" in command_text:
+                    print(f"Command Move to")
+                    '''
+                    - implementare BFT per il path finding.
+                    - movimento del robot con Agent (in caso di ostacoli), in caso di ostacoli ricalcolo percorso
+                    - nel BFT non gestisco casistica degli ostacoli in modo corretto
+                    '''
+                    x,y = input("Inserisci la posizione (x,y)")
+                    target = (x,y)
+                    bft = Bft(simulation.robot, target, simulation.obstacles)
+
+                    path = bft.search()
+
+                    if path:
+                        print("Percorso trovato:")
+                        print(path)
+
+                        # stop - in caso di movimento precedente si ferma
+                        simulation.current_move = None
+
+                        # start
+                        simulation.current_move = simulation.spec_move(path)
+                        MoveTo()
+                    else:
+                        print("EndPoint non raggiungibile")
+                #
+                elif command_text == "None": # None case
+                    print(f"None Command..")
+                else:
+                    print(f"Unknown Command: [{command_text}]")
+                    raise ValueError("Unknown Command")
+            except Exception as e:
+                print(f"Exception catched: [{e}]")
+            except ValueError as ve:
+                print(f"Value Error: [{ve}]")
+            except KeyError as ke:
+                print(f"Key Error, missing key [command]: [{ke}]")
+            #
+            if simulation.current_move:
+                MoveTo(simulation)
+            # pass current command to last command var to check if they are different
+            last_data = data
+            data = CheckData()
+        else:
+            print(f"Same command as before[Last_Data: {last_data} | Data: {data}]")
+            continue
         #
-        if simulation.current_move:
-            MoveTo(simulation)
     #
 #
 def MoveTo(sim):
